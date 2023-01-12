@@ -48,28 +48,31 @@ static void activate (GtkApplication *app, gpointer user_data) {
     GtkWidget *mainWindow, *fixed, *entryBox, *background;
     GtkCssProvider *cssProvider;
 
+    // Create containers for windows
     background = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     entryBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 15);
     fixed = gtk_fixed_new();
     
+    // Create entrys for the nodes values
     GtkWidget *node;
     for (int i = 0; i < numNodes; i++) {
         node = gtk_entry_new();
-        gtk_widget_set_size_request(GTK_WIDGET(node), 10, 25);
+        gtk_widget_set_max_size_request(GTK_WIDGET(node), 10, -1);
         gtk_box_pack_start(GTK_BOX(entryBox), node, TRUE, TRUE, 0);
         gtk_style_context_add_class(gtk_widget_get_style_context(node), "entry-node");
 
     }
     
+    // Create window for the capture values the nodes and selection the type order
     mainWindow = gtk_application_window_new(app);
     gtk_window_set_position(GTK_WINDOW(mainWindow), GTK_WIN_POS_CENTER);
     gtk_window_set_title (GTK_WINDOW (mainWindow), "Generar nuevo arbol");
     gtk_window_set_default_size(GTK_WINDOW(mainWindow), 820, 500);
     gtk_window_set_resizable(GTK_WINDOW(mainWindow), TRUE);
-    
+
 
     // gtk_style_context_add_class(gtk_widget_get_style_context(buttonAcer), "button");
-
+    gtk_widget_set_name(GTK_WIDGET(background), "background");
     // Load CSS file
     cssProvider = gtk_css_provider_new();
     gtk_css_provider_load_from_path(cssProvider, "./style.css", NULL);

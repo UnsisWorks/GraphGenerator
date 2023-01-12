@@ -1,4 +1,7 @@
+.background {
+    background: linear-gradient(rgb(107, 163, 220) 25%, rgb(0, 83, 166));
+}
 .entry-node {
-    background: rgb(17, 135, 185);
+    background:  rgb(9, 105, 173);
     color: whitesmoke;
 }
