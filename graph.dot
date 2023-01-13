@@ -1,0 +1,24 @@
+shape=sphere
+{
+    bgcolor = "white"
+    style = "filled"
+    peripheries = 1
+    color = "white"
+    shape = "circle"
+    label = ""
+    polygon
+    sides = 20
+    skew = 0.3
+    distortion = -0.2
+    color = "green"
+    style = "filled"
+    label = ""
+    polygon
+    sides = 20
+    skew = 0.3
+    distortion = -0.2
+    color = "red"
+    style = "filled"
+    label = ""
+}
+

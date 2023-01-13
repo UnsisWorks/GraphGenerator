@@ -1,23 +1,26 @@
 digraph L {
-    node[shape = egg fillcolor = "#c81313" style = filled]
+    node[shape = doublecircle fillcolor = "#c8131300" style = filled]
     
     label = "Matriz disperza" // Pie de grafo
-    bgcolor = "#07836a" // background
-    
+    bgcolor = "#07836a80" // background
+        node [shape=none, image="./images/esfera.png"];
+    a [label="sphere"];
     subgraph name {
         raiz[label = "Raiz"]
-        edge[dir = "both"]
+        edge[dir = "both" fillcolor = "#13c8c8"]
         // Crear cabezeras de las filas
-        fila1[label = "fila 1" group = 1, fillcolor = powderblue]; 
+        fila1[label = "fila 1" group = 1]; 
         fila2[label = "fila 2" group = 1]; 
         fila3[label = "fila 3" group = 1]; 
         fila4[label = "fila 4" group = 1]; 
         fila5[label = "fila 5" group = 1];
         fila6[label = "fila 6" group = 1]; 
         fila7[label = "fila 7" group = 1];
+        fila8[label = "fila 5" group = 1];
 
         // Enlazamos los nodos 'FILA'
         raiz -> fila1
+        edge[dir = "both" color = "#4613c8"]
         raiz -> fila2
         raiz -> fila3
         fila3 -> fila4
@@ -26,7 +29,7 @@ digraph L {
         fila1 -> fila7 
 
         // Hacemos las columnas
-        columna1[label = "columna 2", group = 2, fillcolor = yellow]
+        // columna1[label = "columna 2", group = 2, fillcolor = yellow]
         //columna2[label = "columna 2", group = 3]
         //columna3[label = "columna 3", group = 4]
         //columna4[label = "columna 4", group = 5]
