@@ -6,14 +6,14 @@ shape=sphere
     color = "white"
     shape = "circle"
     label = ""
-    polygon
+    polygon:
     sides = 20
     skew = 0.3
     distortion = -0.2
     color = "green"
     style = "filled"
     label = ""
-    polygon
+    polygon:
     sides = 20
     skew = 0.3
     distortion = -0.2

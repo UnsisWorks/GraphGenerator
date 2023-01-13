@@ -3,7 +3,7 @@ digraph L {
     
     label = "Matriz disperza" // Pie de grafo
     bgcolor = "#07836a80" // background
-        node [shape=none, image="./images/esfera.png"];
+        node [shape=none, image="./images/Árboles/Esfera3.png"];
     a [label="sphere"];
     subgraph name {
         raiz[label = "Raiz"]
@@ -17,6 +17,9 @@ digraph L {
         fila6[label = "fila 6" group = 1]; 
         fila7[label = "fila 7" group = 1];
         fila8[label = "fila 5" group = 1];
+        fila9[label = "fila 6" group = 1]; 
+        fila10[label = "fila 7" group = 1];
+        fila11[label = "fila 5" group = 1];
 
         // Enlazamos los nodos 'FILA'
         raiz -> fila1
@@ -37,3 +40,5 @@ digraph L {
         
     }
 } 
+
+// Compiler: dot -Tpng -o graph.png -Kdot -Gshapefile=sphere.dot plantilla.dot

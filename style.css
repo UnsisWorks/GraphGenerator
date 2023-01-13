@@ -1,7 +1,20 @@
 .background {
-    background: linear-gradient(rgb(107, 163, 220) 25%, rgb(0, 83, 166));
+    background: linear-gradient(rgb(231, 231, 231) 0%, rgb(0, 44, 87));
+    /* background: rgba(207, 207, 207, 0.168); */
 }
 .entry-node {
-    background:  rgb(9, 105, 173);
+    background:  rgb(0, 74, 147);
     color: whitesmoke;
+}
+.label-title {
+    color: rgba(75, 8, 131, 0.644);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+}
+.label-entrys {
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 2px;
 }
