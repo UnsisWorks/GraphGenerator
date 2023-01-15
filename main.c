@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "entry.c"
 
 int numNodes = 4;
 
@@ -46,7 +47,10 @@ void createGrafo() {
 
 static void activate (GtkApplication *app, gpointer user_data) {
     GtkWidget *mainWindow, *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
+    GtkWidget *text;
     GtkCssProvider *cssProvider;
+    text = text_field_new();
+        gtk_widget_set_size_request(GTK_WIDGET(text), 20, -1);
 
     // Create containers for windows
     background = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -56,39 +60,41 @@ static void activate (GtkApplication *app, gpointer user_data) {
     gtk_widget_set_margin_end(GTK_WIDGET(entryBox), 25);
 
     // Create labels for windows
-    title = gtk_label_new("CREAR NUEVO ARBOL");
-    gtk_box_pack_start(GTK_BOX(background), title, FALSE, FALSE, 5);
-    gtk_style_context_add_class(gtk_widget_get_style_context(title), "label-title");
+    // title = gtk_label_new("CREAR NUEVO ARBOL");
+    // gtk_box_pack_start(GTK_BOX(background), title, FALSE, FALSE, 5);
+    // gtk_style_context_add_class(gtk_widget_get_style_context(title), "label-title");
 
-    labelEntrys = gtk_label_new("Elementos para el arbòl");
-    gtk_style_context_add_class(gtk_widget_get_style_context(labelEntrys), "label-entrys");
-    gtk_fixed_put(GTK_FIXED(fixed), labelEntrys, 40, 0);
+    // labelEntrys = gtk_label_new("Elementos para el arbòl");
+    // gtk_style_context_add_class(gtk_widget_get_style_context(labelEntrys), "label-entrys");
+    // gtk_fixed_put(GTK_FIXED(fixed), labelEntrys, 40, 0);
     
     // Create entrys for the nodes values
     GtkWidget *node;
-    for (int i = 0; i < numNodes; i++) {
-        node = gtk_entry_new();
-        gtk_entry_set_max_length(GTK_ENTRY(node), 10);
-        gtk_widget_set_vexpand_set(GTK_WIDGET(node), TRUE);
-        gtk_widget_set_size_request(GTK_WIDGET(node), 20, -1);
-        gtk_widget_set_opacity(GTK_WIDGET(node), 0.5);
-        gtk_box_pack_start(GTK_BOX(entryBox), node, TRUE, TRUE, 0);
-        gtk_style_context_add_class(gtk_widget_get_style_context(node), "entry-node");
+    GtkWidget *eventBox;
+    // GtkWidget *grid = 
+    // for (int i = 0; i < numNodes; i++) {
+    //     node = gtk_entry_new();
+    //     eventBox = gtk_event_box_new();
+    //     gtk_container_add(GTK_CONTAINER(eventBox), node);
+    //     gtk_style_context_add_class(gtk_widget_get_style_context(node), "entry-node");
+    //     gtk_entry_set_max_length(GTK_ENTRY(node), 10);
+    //     // gtk_widget_set_vexpand_set(GTK_WIDGET(node), TRUE);
+    //     gtk_widget_set_size_request(GTK_WIDGET(eventBox), 20, -1);
+    //     gtk_widget_set_opacity(GTK_WIDGET(node), 0.5);
+    //     gtk_box_pack_start(GTK_BOX(entryBox), node, TRUE, TRUE, 0);
 
-    }
+    // }
 
     // Create button for create three with diferents recorridos
-    comboBoxCreate = gtk_combo_box_new();
-    gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\t   Crear");
-    gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\t  Preorden");
-    gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\t  Orden");
-    gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\tPost-orden");
-    gtk_combo_box_set_
-    gtk_combo_box_set_active(GTK_COMBO_BOX(comboBoxCreate) 0);
+    // comboBoxCreate = gtk_combo_box_new();
+    // gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\t   Crear");
+    // gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\t  Preorden");
+    // gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\t  Orden");
+    // gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\tPost-orden");
+    // gtk_combo_box_set_
+    // gtk_combo_box_set_active(GTK_COMBO_BOX(comboBoxCreate) 0);
 
-    gtk_fixed_put(GTK_FIXED(fixed), comboBoxCreate, 350, 150);
-
-    // gtk_box_pack_end(GTK_BOX(background), comboBoxCreate, FALSE, FALSE, 0);
+    // gtk_fixed_put(GTK_FIXED(fixed), comboBoxCreate, 350, 150);
 
     // Create window for the capture values the nodes and selection the type order
     mainWindow = gtk_application_window_new(app);
@@ -96,10 +102,13 @@ static void activate (GtkApplication *app, gpointer user_data) {
     gtk_window_set_title (GTK_WINDOW (mainWindow), "Generar nuevo arbol");
     gtk_window_set_default_size(GTK_WINDOW(mainWindow), 820, 500);
     gtk_window_set_resizable(GTK_WINDOW(mainWindow), TRUE);
+        gtk_widget_set_size_request(GTK_WIDGET(mainWindow), 0, -1);
 
 
     // gtk_style_context_add_class(gtk_widget_get_style_context(buttonAcer), "button");
     gtk_widget_set_name(GTK_WIDGET(background), "background");
+    gtk_widget_set_name(GTK_WIDGET(entryBox), "entry-box");
+    gtk_widget_set_name(GTK_WIDGET(fixed), "fixed");
     // Load CSS file
     cssProvider = gtk_css_provider_new();
     gtk_css_provider_load_from_path(cssProvider, "./style.css", NULL);
@@ -109,6 +118,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
 
     gtk_fixed_put(GTK_FIXED(fixed), entryBox, 0, 35);
     gtk_container_add(GTK_CONTAINER(background), fixed);
+    // gtk_container_add(GTK_CONTAINER(background), text);
     gtk_container_add(GTK_CONTAINER(mainWindow), background);
     gtk_widget_show_all (mainWindow);
 }

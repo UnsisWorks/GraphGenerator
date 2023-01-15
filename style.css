@@ -1,10 +1,18 @@
 .background {
     background: linear-gradient(rgb(231, 231, 231) 0%, rgb(0, 44, 87));
     /* background: rgba(207, 207, 207, 0.168); */
+    min-width: 0;
+}
+.entry-box {
+    min-width: 0;
+}
+#fixed {
+    min-width: 0;
 }
 .entry-node {
     background:  rgb(0, 74, 147);
     color: whitesmoke;
+    min-height: 25px;
 }
 .label-title {
     color: rgba(75, 8, 131, 0.644);
@@ -18,3 +26,7 @@
     font-size: 18px;
     letter-spacing: 2px;
 }
+TextField {
+    min-width: 0;
+  }
+  
