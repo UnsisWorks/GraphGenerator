@@ -17,6 +17,7 @@ GtkWidget *text_field_new(void);
 G_DEFINE_TYPE(TextField, text_field, GTK_TYPE_ENTRY)
 
 static void text_field_size_allocate(GtkWidget *widget, GtkAllocation *allocation) {
+    gtk_widget_set_size_request(widget, 0, -1);
     GTK_WIDGET_CLASS(text_field_parent_class)->size_allocate(widget, allocation);
 }
 

@@ -12,7 +12,7 @@
 .entry-node {
     background:  rgb(0, 74, 147);
     color: whitesmoke;
-    min-height: 25px;
+    min-width: 1px;
 }
 .label-title {
     color: rgba(75, 8, 131, 0.644);
@@ -26,7 +26,7 @@
     font-size: 18px;
     letter-spacing: 2px;
 }
-TextField {
-    min-width: 0;
-  }
-  
+.button-create {
+    background-image: url("./images/Árboles/Esfera3.png");
+    background-repeat: unset;
+}

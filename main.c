@@ -48,13 +48,14 @@ void createGrafo() {
 static void activate (GtkApplication *app, gpointer user_data) {
     GtkWidget *mainWindow, *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
     GtkWidget *text;
+    GtkWidget *buttonCreate, *buttonBoxCreate;
     GtkCssProvider *cssProvider;
     // text = text_field_new();
     //     gtk_widget_set_size_request(GTK_WIDGET(text), 20, -1);
 
     // Create containers for windows
     background = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    entryBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 15);
+    entryBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     fixed = gtk_fixed_new();
     gtk_widget_set_margin_start(GTK_WIDGET(entryBox), 25);
     gtk_widget_set_margin_end(GTK_WIDGET(entryBox), 25);
@@ -71,7 +72,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
     // Create entrys for the nodes values
     GtkWidget *node;
     for (int i = 0; i < numNodes; i++) {
-        node = gtk_entry_new();
+        node = text_field_new();
         gtk_style_context_add_class(gtk_widget_get_style_context(node), "entry-node");
         gtk_entry_set_max_length(GTK_ENTRY(node), 10);
         gtk_widget_set_opacity(GTK_WIDGET(node), 0.5);
@@ -80,15 +81,12 @@ static void activate (GtkApplication *app, gpointer user_data) {
     }
 
     // Create button for create three with diferents recorridos
-    // comboBoxCreate = gtk_combo_box_new();
-    // gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\t   Crear");
-    // gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\t  Preorden");
-    // gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\t  Orden");
-    // gtk_combo_box_append(GTK_COMBO_BOX(comboBoxCreate), 0, "\tPost-orden");
-    // gtk_combo_box_set_
-    // gtk_combo_box_set_active(GTK_COMBO_BOX(comboBoxCreate) 0);
+    buttonBoxCreate = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+    buttonCreate = gtk_button_new();
+    gtk_container_add(GTK_CONTAINER(buttonBoxCreate), buttonCreate);
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonBoxCreate), "button-create");
 
-    // gtk_fixed_put(GTK_FIXED(fixed), comboBoxCreate, 350, 150);
+    gtk_fixed_put(GTK_FIXED(fixed), buttonBoxCreate, 350, 150);
 
     // Create window for the capture values the nodes and selection the type order
     mainWindow = gtk_application_window_new(app);
@@ -112,7 +110,6 @@ static void activate (GtkApplication *app, gpointer user_data) {
 
     gtk_fixed_put(GTK_FIXED(fixed), entryBox, 0, 35);
     gtk_container_add(GTK_CONTAINER(background), fixed);
-    // gtk_container_add(GTK_CONTAINER(background), text);
     gtk_container_add(GTK_CONTAINER(mainWindow), background);
     gtk_widget_show_all (mainWindow);
 }
