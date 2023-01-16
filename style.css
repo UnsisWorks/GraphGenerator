@@ -5,6 +5,9 @@
 }
 .entry-box {
     min-width: 0;
+    color: whitesmoke;
+    font-weight: 900;
+    letter-spacing: 10px;
 }
 #fixed {
     min-width: 0;

@@ -3,7 +3,8 @@ digraph L {
     
     label = "Matriz disperza" // Pie de grafo
     bgcolor = "#07836a80" // background
-        node [shape=none, image="./images/Árboles/Esfera3.png"];
+    
+    node [shape=none, image="./images/Árboles/Esfera3.png"];
     a [label="sphere"];
     subgraph name {
         raiz[label = "Raiz"]

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "entry.c"
 
-int numNodes = 4;
+int numNodes = 1;
 
 void createGrafo() {
 
@@ -57,6 +57,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
     background = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     entryBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     fixed = gtk_fixed_new();
+    gtk_widget_set_size_request(GTK_WIDGET(entryBox), 800, -1);
     gtk_widget_set_margin_start(GTK_WIDGET(entryBox), 25);
     gtk_widget_set_margin_end(GTK_WIDGET(entryBox), 25);
 
@@ -71,12 +72,15 @@ static void activate (GtkApplication *app, gpointer user_data) {
     
     // Create entrys for the nodes values
     GtkWidget *node;
-    for (int i = 0; i < numNodes; i++) {
+    for (int i = 0; i < 1; i++) {
         node = text_field_new();
-        gtk_style_context_add_class(gtk_widget_get_style_context(node), "entry-node");
-        gtk_entry_set_max_length(GTK_ENTRY(node), 10);
         gtk_widget_set_opacity(GTK_WIDGET(node), 0.5);
+        gtk_entry_set_alignment(GTK_ENTRY(node), 0.5);
+        gtk_widget_set_focus_on_click(GTK_WIDGET(node), FALSE);
+        gtk_widget_set_size_request(GTK_WIDGET(node), 210, 5);
         gtk_box_pack_start(GTK_BOX(entryBox), node, TRUE, TRUE, 0);
+        gtk_entry_set_placeholder_text(GTK_ENTRY(node), "1-2-3-4-5-6-7-8-9-...-");
+        gtk_style_context_add_class(gtk_widget_get_style_context(node), "entry-node");
 
     }
 
@@ -85,6 +89,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
     buttonCreate = gtk_button_new();
     gtk_container_add(GTK_CONTAINER(buttonBoxCreate), buttonCreate);
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonBoxCreate), "button-create");
+    g_signal_connect(buttonCreate, "clicked", G_CALLBACK(createGrafo), NULL);
 
     gtk_fixed_put(GTK_FIXED(fixed), buttonBoxCreate, 350, 150);
 
