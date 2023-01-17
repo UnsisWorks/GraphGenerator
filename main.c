@@ -64,29 +64,32 @@ void createGrafo() {
 
         // Create array for values the nodes
         gint values[numNodes];
+
         // Save values for each nodes
         int preInput = 0;
         int count = 0;
         GString *aux = g_string_new("");
         for (int i = 0; i < input -> len; i++) {
             if (input -> str[i] == '-') {
-                g_string_assign(aux, "-");
+                // g_string_assign(aux, "");
                 // Chars between the flags "-"
                 for (int j = preInput; j < i; j++) {
                     g_string_append_c(aux, input->str[j]);
+                    values[count] = atoi(aux->str);
                     preInput = i + 1;
                 }
+                printf("Valor: %d : i: %d\n", values[count], i);
                 count++;
-                printf("Valor: %s : i: %d\n", aux->str, i);
             }
+            g_string_assign(aux, "");
             // Save the ultimate value
             if (count == (numNodes - 1)) {
-                g_string_assign(aux, "-");
-                for (int j = i; j < input -> len; j++) {
+                for (int j = i + 1; j < input -> len; j++) {
                     g_string_append_c(aux, input->str[j]);
+                    values[count] = atoi(aux->str);
                     preInput = i + 1;
                 }
-                printf("Valor: %s : i: %d\n", aux->str, i);
+                printf("Valor: %d : i: %d\n", values[count], i);
                 break;
             }
         }
