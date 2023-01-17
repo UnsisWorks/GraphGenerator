@@ -7,12 +7,8 @@ digraph Holaaa {
 		raiz[label = "Raiz"]
 		edge[dir = "both"]
 		fila0[label = "Vector" group=1]
-		fila1[label = "Vector" group=1]
-		fila2[label = "Vector" group=1]
 
 		raiz -> fila0
-		fila0 -> fila1
-		fila1 -> fila2
 
 	}
 }

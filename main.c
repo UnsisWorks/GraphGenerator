@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include "entry.c"
 
-int numNodes = 1;
+int numNodes;
+GtkWidget *node;
 
-void createGrafo() {
-
+void ExportToDot() {
     char name[] = "Holaaa";
     char shapeForm[] = "egg";
     char style[] = "filled";
@@ -45,6 +45,57 @@ void createGrafo() {
     fclose(arbol);
 }
 
+void createGrafo() {
+    // Get input the user
+    GString *input = g_string_new(gtk_entry_get_text(GTK_ENTRY(node)));  
+
+    // Compare string null
+    if(strcmp("", input -> str) != 0) {
+
+        numNodes = 1;
+        
+        // Count number the "-" and get number the nodes
+        for (int i = 0; i < input -> len; i++) {
+            if (input ->str[i] == '-') {
+                numNodes++;
+            }   
+        }
+        printf("El usuario ingreso %d datos\n", numNodes);
+
+        // Create array for values the nodes
+        gint values[numNodes];
+        // Save values for each nodes
+        int preInput = 0;
+        int count = 0;
+        GString *aux = g_string_new("");
+        for (int i = 0; i < input -> len; i++) {
+            if (input -> str[i] == '-') {
+                g_string_assign(aux, "-");
+                // Chars between the flags "-"
+                for (int j = preInput; j < i; j++) {
+                    g_string_append_c(aux, input->str[j]);
+                    preInput = i + 1;
+                }
+                count++;
+                printf("Valor: %s : i: %d\n", aux->str, i);
+            }
+            // Save the ultimate value
+            if (count == (numNodes - 1)) {
+                g_string_assign(aux, "-");
+                for (int j = i; j < input -> len; j++) {
+                    g_string_append_c(aux, input->str[j]);
+                    preInput = i + 1;
+                }
+                printf("Valor: %s : i: %d\n", aux->str, i);
+                break;
+            }
+        }
+
+    } else {
+        puts("Vacia");
+    }
+}
+
 static void activate (GtkApplication *app, gpointer user_data) {
     GtkWidget *mainWindow, *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
     GtkWidget *text;
@@ -71,22 +122,19 @@ static void activate (GtkApplication *app, gpointer user_data) {
     gtk_fixed_put(GTK_FIXED(fixed), labelEntrys, 40, 0);
     
     // Create entrys for the nodes values
-    GtkWidget *node;
-    for (int i = 0; i < 1; i++) {
-        node = text_field_new();
-        gtk_widget_set_opacity(GTK_WIDGET(node), 0.5);
-        gtk_entry_set_alignment(GTK_ENTRY(node), 0.5);
-        gtk_widget_set_focus_on_click(GTK_WIDGET(node), FALSE);
-        gtk_widget_set_size_request(GTK_WIDGET(node), 210, 5);
-        gtk_box_pack_start(GTK_BOX(entryBox), node, TRUE, TRUE, 0);
-        gtk_entry_set_placeholder_text(GTK_ENTRY(node), "1-2-3-4-5-6-7-8-9-...-");
-        gtk_style_context_add_class(gtk_widget_get_style_context(node), "entry-node");
-
-    }
+    node = text_field_new();
+    gtk_widget_set_opacity(GTK_WIDGET(node), 0.5);
+    gtk_entry_set_alignment(GTK_ENTRY(node), 0.5);
+    gtk_widget_set_focus_on_click(GTK_WIDGET(node), FALSE);
+    gtk_widget_set_size_request(GTK_WIDGET(node), 30, 5);
+    gtk_box_pack_start(GTK_BOX(entryBox), node, FALSE, FALSE, 0);
+    gtk_entry_set_placeholder_text(GTK_ENTRY(node), "1-2-3-4-5-6-7-8-9-...-");
+    gtk_style_context_add_class(gtk_widget_get_style_context(node), "entry-node");
 
     // Create button for create three with diferents recorridos
     buttonBoxCreate = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
     buttonCreate = gtk_button_new();
+    gtk_widget_set_focus_on_click(GTK_WIDGET(buttonCreate), TRUE);
     gtk_container_add(GTK_CONTAINER(buttonBoxCreate), buttonCreate);
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonBoxCreate), "button-create");
     g_signal_connect(buttonCreate, "clicked", G_CALLBACK(createGrafo), NULL);
