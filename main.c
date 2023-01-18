@@ -6,14 +6,14 @@
 int numNodes;
 GtkWidget *node;
 
-void ExportToDot() {
+void ExportToDot(gint values[numNodes], int parents[numNodes]) {
     char name[] = "Holaaa";
     char shapeForm[] = "egg";
     char style[] = "filled";
     char fillColor[] = "#c81313";
     char bgColor[] = "#00ff0d";
     char pieGrafo[] = "Matriz disperza";
-    char edgeDir[] = "both";
+    char edgeDir[] = "normal";
 
     FILE *arbol = fopen("./data.dot", "w");
 
@@ -23,26 +23,64 @@ void ExportToDot() {
     fprintf(arbol, "\tbgcolor = \"%s\"\n\n", bgColor);
 
     fprintf(arbol, "\tsubgraph subGraph {\n");
-    fprintf(arbol, "\t\traiz[label = \"%s\"]\n", "Raiz");
+    fprintf(arbol, "\t\traiz[label = \"%d\"]\n", values[0]);
     fprintf(arbol, "\t\tedge[dir = \"%s\"]\n", edgeDir);
 
     // Create nodes needed
-    for (int i = 0; i < numNodes; i++) {
-        fprintf(arbol, "\t\tfila%d[label = \"%s\" group=1]\n", i, "Vector");
+    for (int i = 1; i < numNodes; i++) {
+        fprintf(arbol, "\t\tfila%d[label = \"%d\" group=1]\n", i - 1, values[i]);
     }
     
-    fprintf(arbol, "\n\t\traiz -> fila0\n");  
+    // Establece los punteros entre nodos. Basado en vectores enlazados
+    fprintf(arbol, "\n\t\traiz -> fila0\n");
+    fprintf(arbol, "\t\traiz -> fila1\n");  
     
-    for (int i = 0; i < numNodes - 1; i++) {
-        fprintf(arbol, "\t\tfila%d -> fila%d\n", i, i + 1); 
-        
+    if (numNodes > 3) {
+        for (int i = 1; i < numNodes - 1; i++) {
+            fprintf(arbol, "\t\tfila%d -> fila%d\n", i, parents[i + 1]); 
+            
+        }
     }
+
     
     // fprintf(arbol, "");  
 
     fprintf(arbol, "\n\t}");
     fprintf(arbol, "\n}");
     fclose(arbol);
+}
+
+void orderValues(int values[], int init, int end) {
+    // puts("eentro");
+    int izq = init;
+    int der = end;
+    int center;
+    // int pivote = (L[init] + L[end]) / 2;
+    int pivote = values[init];
+
+    // Establecer el caso base
+    if (init < end) {
+        while (izq < der) {
+            // Ordena elementos menores al pivote -> izquierda
+            while ((der > izq) && (values[der] > pivote)) 
+                der--;
+            if(der > izq) {
+                values[izq] = values[der];
+                izq++;
+            }
+            // Ordena elementos mayores al pivote -> derecha
+            while ((izq < der) && (values[izq] < pivote)) 
+                izq++;
+            if(izq < der) {
+                values[der] = values[izq];
+                der--;
+            }
+        }
+        values[der] = pivote;
+        center = der;
+        orderValues(values, init, center - 1);
+        orderValues(values, center + 1, end);
+    }
 }
 
 void createGrafo() {
@@ -60,7 +98,7 @@ void createGrafo() {
                 numNodes++;
             }   
         }
-        printf("El usuario ingreso %d datos\n", numNodes);
+        // printf("El usuario ingreso %d datos\n", numNodes);
 
         // Create array for values the nodes
         gint values[numNodes];
@@ -78,7 +116,7 @@ void createGrafo() {
                     values[count] = atoi(aux->str);
                     preInput = i + 1;
                 }
-                printf("Valor: %d : i: %d\n", values[count], i);
+                // printf("Valor: %d : i: %d\n", values[count], i);
                 count++;
             }
             g_string_assign(aux, "");
@@ -89,7 +127,7 @@ void createGrafo() {
                     values[count] = atoi(aux->str);
                     preInput = i + 1;
                 }
-                printf("Valor: %d : i: %d\n", values[count], i);
+                // printf("Valor: %d : i: %d\n", values[count], i);
                 break;
             }
         }
@@ -100,7 +138,38 @@ void createGrafo() {
         * 
         */
         
+        int root = values[0]; // Valor contenido en la raiz
+        int parents[numNodes]; // Vector: contiene indice a el que apunta su enlace "i" 
+        int father = 0; // Padre actual en cada iteracion
+        int left = 0; // sub grafo Izquierdo. Valores menores a la raiz
+        int rigth = 0; // sub grafo Derecho. Valores mayores a la raiz
+
+        for (int i = 1; i < numNodes; i++) {
+
+            if (father != 0) {
+                if (values[i] < root) {
+                    root = left;
+                } else {
+                    root = rigth;
+                }
+            }
+
+            // Nodos menores a la raiz -> Izquirda
+            if (values[i] < root) {
+                parents[i] = father;
+                left++;
+            }
+            // Nodos mayores a la raiz -> Derecha
+            if (values[i] > root) {
+                parents[i] = father;
+                rigth++;
+            }
+            printf("value: %d pos: %d\n", values[i], parents[i]);
+                    printf("root = %d\n", root);
+            father++;
+        }
         
+        ExportToDot(values, parents);
     } else {
         puts("Vacia");
     }

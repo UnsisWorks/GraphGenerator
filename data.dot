@@ -4,11 +4,13 @@ digraph Holaaa {
 	bgcolor = "#00ff0d"
 
 	subgraph subGraph {
-		raiz[label = "Raiz"]
-		edge[dir = "both"]
-		fila0[label = "Vector" group=1]
+		raiz[label = "12"]
+		edge[dir = "normal"]
+		fila0[label = "56" group=1]
+		fila1[label = "78" group=1]
 
 		raiz -> fila0
+		raiz -> fila1
 
 	}
 }
