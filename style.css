@@ -30,6 +30,23 @@
     letter-spacing: 2px;
 }
 .button-create {
-    background-image: url("./images/Árboles/Esfera3.png");
-    background-repeat: unset;
+    background-image: url("./images/Crear.png");
+    background-repeat: no-repeat;
+    border: none;
 }
+.button-box-create{
+    border: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

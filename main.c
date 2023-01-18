@@ -94,6 +94,13 @@ void createGrafo() {
             }
         }
 
+       /*
+        * Create Grapho with values in 'values'
+        * [0][0] = Raiz
+        * 
+        */
+        
+        
     } else {
         puts("Vacia");
     }
@@ -101,7 +108,7 @@ void createGrafo() {
 
 static void activate (GtkApplication *app, gpointer user_data) {
     GtkWidget *mainWindow, *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
-    GtkWidget *text;
+    GtkWidget *nameField;
     GtkWidget *buttonCreate, *buttonBoxCreate;
     GtkCssProvider *cssProvider;
     // text = text_field_new();
@@ -130,19 +137,30 @@ static void activate (GtkApplication *app, gpointer user_data) {
     gtk_entry_set_alignment(GTK_ENTRY(node), 0.5);
     gtk_widget_set_focus_on_click(GTK_WIDGET(node), FALSE);
     gtk_widget_set_size_request(GTK_WIDGET(node), 30, 5);
-    gtk_box_pack_start(GTK_BOX(entryBox), node, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(entryBox), node, TRUE, TRUE, 0);
     gtk_entry_set_placeholder_text(GTK_ENTRY(node), "1-2-3-4-5-6-7-8-9-...-");
     gtk_style_context_add_class(gtk_widget_get_style_context(node), "entry-node");
 
+    nameField = text_field_new();
+    gtk_widget_set_opacity(GTK_WIDGET(nameField), 0.5);
+    gtk_entry_set_alignment(GTK_ENTRY(nameField), 0.5);
+    gtk_fixed_put(GTK_FIXED(fixed), nameField, 340, 150);
+    gtk_widget_set_size_request(GTK_WIDGET(nameField), 230, -1);
+    gtk_entry_set_placeholder_text(GTK_ENTRY(nameField), "Nombre del grafo");
+    gtk_style_context_add_class(gtk_widget_get_style_context(nameField), "entry-node");
+
+
     // Create button for create three with diferents recorridos
-    buttonBoxCreate = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
     buttonCreate = gtk_button_new();
     gtk_widget_set_focus_on_click(GTK_WIDGET(buttonCreate), TRUE);
+    gtk_widget_set_size_request(GTK_WIDGET(buttonCreate), 144, -1);
+    buttonBoxCreate = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
     gtk_container_add(GTK_CONTAINER(buttonBoxCreate), buttonCreate);
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonBoxCreate), "button-create");
     g_signal_connect(buttonCreate, "clicked", G_CALLBACK(createGrafo), NULL);
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonCreate), "button-create");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonBoxCreate), "button-box-create");
 
-    gtk_fixed_put(GTK_FIXED(fixed), buttonBoxCreate, 350, 150);
+    gtk_fixed_put(GTK_FIXED(fixed), buttonBoxCreate, 348, 240);
 
     // Create window for the capture values the nodes and selection the type order
     mainWindow = gtk_application_window_new(app);
