@@ -2,9 +2,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "entry.c"
+#include "grapho.c"
 
 int numNodes;
 GtkWidget *node;
+
+static void advertencia (GtkWindow *parent, gchar *message) {
+    GtkWidget *dialog, *label, *content_area;
+    GtkDialogFlags flags;
+
+    // Create the widgets
+    flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+    dialog = gtk_dialog_new_with_buttons ("Message",NULL,flags,("_OK"), GTK_RESPONSE_NONE,NULL);
+    content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+    label = gtk_label_new (message);(bin->str)[i];
+
+    // Ensure that the dialog box is destroyed when the user responds
+
+    g_signal_connect_swapped (dialog, "response",G_CALLBACK (gtk_widget_destroy),dialog);
+
+    // Add the label, and show everything we’ve added
+
+    gtk_container_add (GTK_CONTAINER (content_area), label);
+    gtk_widget_show_all (dialog);
+
+}
+
 
 void ExportToDot(gint values[numNodes], int parents[numNodes]) {
     char name[] = "Holaaa";
@@ -48,39 +71,6 @@ void ExportToDot(gint values[numNodes], int parents[numNodes]) {
     fprintf(arbol, "\n\t}");
     fprintf(arbol, "\n}");
     fclose(arbol);
-}
-
-void orderValues(int values[], int init, int end) {
-    // puts("eentro");
-    int izq = init;
-    int der = end;
-    int center;
-    // int pivote = (L[init] + L[end]) / 2;
-    int pivote = values[init];
-
-    // Establecer el caso base
-    if (init < end) {
-        while (izq < der) {
-            // Ordena elementos menores al pivote -> izquierda
-            while ((der > izq) && (values[der] > pivote)) 
-                der--;
-            if(der > izq) {
-                values[izq] = values[der];
-                izq++;
-            }
-            // Ordena elementos mayores al pivote -> derecha
-            while ((izq < der) && (values[izq] < pivote)) 
-                izq++;
-            if(izq < der) {
-                values[der] = values[izq];
-                der--;
-            }
-        }
-        values[der] = pivote;
-        center = der;
-        orderValues(values, init, center - 1);
-        orderValues(values, center + 1, end);
-    }
 }
 
 void createGrafo() {
@@ -138,6 +128,8 @@ void createGrafo() {
         * 
         */
         
+        struct Node *grapho = NULL;
+
         int root = values[0]; // Valor contenido en la raiz
         int parents[numNodes]; // Vector: contiene indice a el que apunta su enlace "i" 
         int father = 0; // Padre actual en cada iteracion
@@ -175,7 +167,7 @@ void createGrafo() {
     }
 }
 
-static void activate (GtkApplication *app, gpointer user_data) {
+static void create (GtkApplication *app, gpointer user_data) {
     GtkWidget *mainWindow, *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
     GtkWidget *nameField;
     GtkWidget *buttonCreate, *buttonBoxCreate;
@@ -255,6 +247,117 @@ static void activate (GtkApplication *app, gpointer user_data) {
     gtk_container_add(GTK_CONTAINER(background), fixed);
     gtk_container_add(GTK_CONTAINER(mainWindow), background);
     gtk_widget_show_all (mainWindow);
+}
+static void activate (GtkApplication* app, gpointer user_data) {
+
+    GtkWidget *window;
+    GtkWidget *tex;
+    GtkWidget  *buttonAbrir;
+    GtkWidget  *buttonBuscar;
+    GtkWidget  *buttonEliminar;
+    GtkWidget  *buttonDetalles;
+    GtkWidget  *buttonCrear;
+    GtkWidget  *b;
+    GtkWidget  *buttonRecorrido;
+    GtkWidget  *buttonInsertar;
+    GtkWidget  *cajita;
+    GtkWidget  *cajitaInterior;
+    GtkCssProvider *cssProvider;
+    cssProvider = gtk_css_provider_new();
+    //declaraciones
+
+    //tipo de dato
+    buttonAbrir = gtk_button_new();
+    buttonBuscar =  gtk_button_new();
+    buttonEliminar =  gtk_combo_box_new();
+    buttonDetalles = gtk_button_new();
+    tex = gtk_fixed_new ();
+    buttonCrear = gtk_button_new();
+    buttonRecorrido = gtk_combo_box_new();
+    buttonInsertar = gtk_button_new();
+    //buttonCrear = gtk_button_new_with_label ( "buttonCrear");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonCrear), "buttonCrear");
+    //buttonBuscar = gtk_button_new_with_label ( "buttonBuscar");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonBuscar), "buttonBuscar");
+    //buttonEliminar = gtk_button_new_with_label ( "buttonEliminar");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonEliminar), "buttonEliminar");
+    //buttonDetalles = gtk_button_new_with_label ( "buttonDetalles");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonDetalles), "buttonDetalles");
+    //buttonAbrir = gtk_button_new_with_label ( "buttonAbrir");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonAbrir), "buttonAbrir");
+    //buttonRecorrido = gtk_button_new_with_label ( "buttonRecorrido");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonRecorrido), "buttonRecorrido");
+    //buttonInsertar = gtk_button_new_with_label ( "buttonInsertar");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonInsertar), "buttonInsertar");
+    //g_signal_connect (buttonCrear, "clicked", G_CALLBACK (), NULL);//señal que ase la activacion de las funciones del boton
+    cajita = gtk_box_new (GTK_ORIENTATION_VERTICAL,0);
+    cajitaInterior = gtk_box_new (GTK_ORIENTATION_VERTICAL,0);
+
+    b = gtk_label_new ("T---I---T---U---L---O:");
+
+
+    buttonEliminar = gtk_combo_box_text_new();
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonEliminar), "\tEliminar");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonEliminar), "nodo");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonEliminar), "elemento");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonEliminar), "dato");
+
+    buttonRecorrido = gtk_combo_box_text_new();
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "\tRecorrido");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "Pre-Orden");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "In-Orden");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "Pos-Orden");
+
+    gtk_combo_box_set_active(GTK_COMBO_BOX(buttonEliminar), 0);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(buttonRecorrido), 0);
+
+    //inicializacion de la ventana
+    window = gtk_application_window_new (app);
+    gtk_window_set_title (GTK_WINDOW (window), "JARVIS CALCULATOR");//nombre de la ventana
+    gtk_window_set_default_size (GTK_WINDOW (window), 1100, 700);//tamaño de la ventana
+    //gtk_window_set_resizable (GTK_WINDOW(window), FALSE);
+    gtk_window_maximize(GTK_WINDOW(window));
+
+
+    gtk_container_add(GTK_CONTAINER(window), cajita);
+    gtk_container_add(GTK_CONTAINER(cajita), tex);
+    //gtk_container_add(GTK_CONTAINER(tex), cajitaInterior);
+    gtk_widget_set_name(GTK_WIDGET(cajita), "cajita");
+    gtk_widget_set_name(GTK_WIDGET(cajitaInterior), "cajitaInt");
+
+    //gtk_container_add(GTK_CONTAINER(buttonAbrir), entrada);
+    gtk_fixed_put (GTK_FIXED(tex),b, 550, 25);
+    gtk_fixed_put (GTK_FIXED(tex),buttonAbrir, 480, 50);
+    gtk_fixed_put (GTK_FIXED(tex), buttonCrear, 280, 50);
+    gtk_fixed_put (GTK_FIXED(tex), buttonInsertar, 680, 50);
+    gtk_fixed_put (GTK_FIXED(tex),buttonBuscar, 880, 50);
+
+    gtk_fixed_put (GTK_FIXED(tex),buttonEliminar, 540, 150);
+
+    gtk_fixed_put (GTK_FIXED(tex),buttonDetalles, 340, 150);
+
+    gtk_fixed_put (GTK_FIXED(tex), buttonRecorrido, 740, 150);
+
+    gtk_fixed_put (GTK_FIXED(tex), cajitaInterior, 310, 220);
+
+    gtk_button_clicked (GTK_BUTTON (buttonCrear));
+
+    gtk_widget_set_size_request (GTK_WIDGET(buttonCrear),150,35);
+    gtk_widget_set_size_request (GTK_WIDGET(buttonAbrir),150,35);
+    gtk_widget_set_size_request (GTK_WIDGET(buttonBuscar),150,35);
+    gtk_widget_set_size_request (GTK_WIDGET(buttonEliminar),150,35);
+    gtk_widget_set_size_request (GTK_WIDGET(buttonDetalles),150,35);
+    gtk_widget_set_size_request (GTK_WIDGET(buttonRecorrido),150,35);
+    gtk_widget_set_size_request (GTK_WIDGET(buttonInsertar),150,35);
+    gtk_widget_set_size_request (GTK_WIDGET(cajitaInterior),700,400);
+    // Load CSS file
+
+    gtk_css_provider_load_from_path(cssProvider, "./style.css", NULL);
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+    GTK_STYLE_PROVIDER(cssProvider),
+    GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+    gtk_widget_show_all (window);//muestra todos los elementos de la ventana
 }
 
 // funtion main

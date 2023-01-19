@@ -126,6 +126,83 @@ void preOrder(struct Node *root) {
     }
 }
 
+// Elimina un nodo en particular
+struct Node* deleteNode(struct Node* root, int key) {
+    // Realiza una eliminación normal en un árbol binario de búsqueda
+    if (root == NULL)
+        return root;
+
+    // Si la clave a eliminar es menor que la clave del nodo raíz, entonces está en el subárbol izquierdo
+    if ( key < root->key )
+        root->left = deleteNode(root->left, key);
+
+    // Si la clave a eliminar es mayor que la clave del nodo raíz, entonces está en el subárbol derecho
+    else if( key > root->key )
+        root->right = deleteNode(root->right, key);
+
+    // si la clave es igual a la clave del nodo raíz, entonces esta es la clave a eliminar
+    else {
+        // nodo con solo un hijo o sin hijos
+        if( (root->left == NULL) || (root->right == NULL) ) {
+            struct Node *temp = root->left ? root->left : root->right;
+
+            // Sin hijos
+            if (temp == NULL) {
+                temp = root;
+                root = NULL;
+            }
+            else // Un hijo
+            *root = *temp; // Copia el contenido del hijo
+
+            free(temp);
+        }
+        else {
+            // Nodo con dos hijos: Obtiene el predecesor inorder (el mayor en el subarbol izquierdo)
+            struct Node* temp = minValueNode(root->right);
+
+            // Copia el valor del predecesor inorder en el nodo actual
+            root->key = temp->key;
+
+            // Elimina el predecesor inorder
+            root->right = deleteNode(root->right, temp->key);
+        }
+    }
+
+    // Si el árbol sólo tiene un nodo, entonces retorna ese nodo
+    if (root == NULL)
+      return root;
+
+    // Actualiza la altura del nodo actual
+    root->height = 1 + max(height(root->left), height(root->right));
+
+    // Obtiene el factor de equilibrio del nodo actual
+    int balance = getBalance(root);
+
+    // Si el factor de equilibrio es mayor a 1 o menor a -1, entonces el árbol se ha desequilibrado y se necesita realizar una rotación
+
+    // Caso Left Left
+    if (balance > 1 && getBalance(root->left) >= 0)
+        return rightRotate(root);
+
+    // Caso Left Right
+    if (balance > 1 && getBalance(root->left) < 0) {
+        root->left =  leftRotate(root->left);
+        return rightRotate(root);
+    }
+
+    // Caso Right Right
+    if (balance < -1 && getBalance(root->right) <= 0)
+        return leftRotate(root);
+
+    // Caso Right Left
+    if (balance < -1 && getBalance(root->right) > 0) {
+        root->right = rightRotate(root->right);
+        return leftRotate(root);
+    }
+    return root;
+}
+
+
 void inOrder(struct Node *root) {
     if(root != NULL) {
         inOrder(root->left);
@@ -140,22 +217,4 @@ void postOrder(struct Node *root) {
         postOrder(root->right);
         printf("%d ", root->key);
     }
-}
-
-
-int main() {
-  struct Node *root = NULL;
-  // Inserta algunos valores en el AVL tree
-  root = insert(root, 10);
-  root = insert(root, 20);
-  root = insert(root, 30);
-  root = insert(root, 40);
-  root = insert(root, 50);
-  root = insert(root, 25);
-
-  // El valor de la raíz debe ser 30
-  printf("Valor de la raiz: %d\n", root->key);
-  preOrder(root);
-
-  return 0;
 }
