@@ -1,3 +1,4 @@
+/* Set image for baackground to window: Create new grapho */
 .background {
     background: linear-gradient(rgb(231, 231, 231) 0%, rgb(0, 44, 87));
     /* background: rgba(207, 207, 207, 0.168); */
@@ -29,6 +30,8 @@
     font-size: 18px;
     letter-spacing: 2px;
 }
+
+/* Set properties a buttons in main window */
 .button-create {
     background-image: url("./images/Crear.png");
     background-repeat: no-repeat;
@@ -37,7 +40,6 @@
 .button-box-create{
     border: none;
 }
-
 .buttonCrear {
     border-radius: 80px;
     background-image: url("./images/Crear.png");
@@ -70,7 +72,7 @@
 }
 
 /* Subelement;hover for buttons */
-.buttonCrear:hover {
+.buttonCrear:hover, .buttonAbrir:hover {
     border-color: aqua;
     box-shadow: 0px 0px 15px rgb(255, 255, 255);
 }

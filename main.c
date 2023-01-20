@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "entry.c"
-// #include "grapho.c"
+#include "grapho.c"
 
 int numNodes;
 GtkWidget *node;
@@ -128,7 +128,7 @@ void createGrafo() {
         * 
         */
         
-        // struct Node *grapho = NULL;
+        struct Node *grapho = NULL;
 
         int root = values[0]; // Valor contenido en la raiz
         int parents[numNodes]; // Vector: contiene indice a el que apunta su enlace "i" 
@@ -268,11 +268,11 @@ static void activate (GtkApplication* app, gpointer user_data) {
 
     //tipo de dato
     buttonAbrir = gtk_button_new();
+    buttonCrear = gtk_button_new();
     buttonBuscar =  gtk_button_new();
     buttonEliminar =  gtk_combo_box_new();
     buttonDetalles = gtk_button_new();
     tex = gtk_fixed_new ();
-    buttonCrear = gtk_button_new();
     g_signal_connect(buttonCrear, "clicked", G_CALLBACK(create), NULL);
     buttonRecorrido = gtk_combo_box_new();
     buttonInsertar = gtk_button_new();
@@ -335,7 +335,7 @@ static void activate (GtkApplication* app, gpointer user_data) {
 
     gtk_fixed_put (GTK_FIXED(tex), cajitaInterior, 310, 220);
 
-    gtk_button_clicked (GTK_BUTTON (buttonCrear));
+    // gtk_button_clicked (GTK_BUTTON (buttonCrear));
 
     gtk_widget_set_size_request (GTK_WIDGET(buttonCrear),150,35);
     gtk_widget_set_size_request (GTK_WIDGET(buttonAbrir),150,35);

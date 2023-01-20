@@ -126,6 +126,17 @@ void preOrder(struct Node *root) {
     }
 }
 
+struct Node *minValueNode(struct Node* node) {
+    struct Node* current = node;
+ 
+    /* loop down to find the leftmost leaf */
+    while (current->left != NULL)
+        current = current->left;
+ 
+    return current;
+}
+
+
 // Elimina un nodo en particular
 struct Node* deleteNode(struct Node* root, int key) {
     // Realiza una eliminación normal en un árbol binario de búsqueda
