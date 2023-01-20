@@ -171,7 +171,7 @@ static void create (GtkWidget *widget, gpointer user_data) {
     GtkWidget *mainWindow, *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
     GtkWidget *nameField;
     GtkWidget *buttonCreate, *buttonBoxCreate;
-    GtkCssProvider *cssProvider;
+    // GtkCssProvider *cssProvider;
     // text = text_field_new();
     //     gtk_widget_set_size_request(GTK_WIDGET(text), 20, -1);
 
@@ -237,11 +237,11 @@ static void create (GtkWidget *widget, gpointer user_data) {
     gtk_widget_set_name(GTK_WIDGET(fixed), "fixed");
 
     // Load CSS file
-    cssProvider = gtk_css_provider_new();
-    gtk_css_provider_load_from_path(cssProvider, "./style.css", NULL);
-    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
-                                            GTK_STYLE_PROVIDER(cssProvider),
-                                            GTK_STYLE_PROVIDER_PRIORITY_USER);
+    // cssProvider = gtk_css_provider_new();
+    // gtk_css_provider_load_from_path(cssProvider, "./style.css", NULL);
+    // gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+    //                                         GTK_STYLE_PROVIDER(cssProvider),
+    //                                         GTK_STYLE_PROVIDER_PRIORITY_USER);
 
     gtk_fixed_put(GTK_FIXED(fixed), entryBox, 0, 35);
     gtk_container_add(GTK_CONTAINER(background), fixed);
@@ -252,16 +252,16 @@ static void activate (GtkApplication* app, gpointer user_data) {
 
     GtkWidget *window;
     GtkWidget *tex;
-    GtkWidget  *buttonAbrir;
-    GtkWidget  *buttonBuscar;
-    GtkWidget  *buttonEliminar;
-    GtkWidget  *buttonDetalles;
-    GtkWidget  *buttonCrear;
-    GtkWidget  *b;
-    GtkWidget  *buttonRecorrido;
-    GtkWidget  *buttonInsertar;
-    GtkWidget  *cajita;
-    GtkWidget  *cajitaInterior;
+    GtkWidget *buttonAbrir;
+    GtkWidget *buttonBuscar;
+    GtkWidget *buttonEliminar;
+    GtkWidget *buttonDetalles;
+    GtkWidget *buttonCrear;
+    GtkWidget *b;
+    GtkWidget *buttonRecorrido;
+    GtkWidget *buttonInsertar;
+    GtkWidget *cajita;
+    GtkWidget *cajitaInterior;
     GtkCssProvider *cssProvider;
     cssProvider = gtk_css_provider_new();
     //declaraciones
@@ -276,21 +276,15 @@ static void activate (GtkApplication* app, gpointer user_data) {
     g_signal_connect(buttonCrear, "clicked", G_CALLBACK(create), NULL);
     buttonRecorrido = gtk_combo_box_new();
     buttonInsertar = gtk_button_new();
-    //buttonCrear = gtk_button_new_with_label ( "buttonCrear");
+    
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonCrear), "buttonCrear");
-    //buttonBuscar = gtk_button_new_with_label ( "buttonBuscar");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonBuscar), "buttonBuscar");
-    //buttonEliminar = gtk_button_new_with_label ( "buttonEliminar");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonEliminar), "buttonEliminar");
-    //buttonDetalles = gtk_button_new_with_label ( "buttonDetalles");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonDetalles), "buttonDetalles");
-    //buttonAbrir = gtk_button_new_with_label ( "buttonAbrir");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonAbrir), "buttonAbrir");
-    //buttonRecorrido = gtk_button_new_with_label ( "buttonRecorrido");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonRecorrido), "buttonRecorrido");
-    //buttonInsertar = gtk_button_new_with_label ( "buttonInsertar");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonInsertar), "buttonInsertar");
-    //g_signal_connect (buttonCrear, "clicked", G_CALLBACK (), NULL);//señal que ase la activacion de las funciones del boton
+    
     cajita = gtk_box_new (GTK_ORIENTATION_VERTICAL,0);
     cajitaInterior = gtk_box_new (GTK_ORIENTATION_VERTICAL,0);
 

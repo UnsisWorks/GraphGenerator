@@ -40,25 +40,24 @@
 
 .buttonCrear {
     border-radius: 80px;
-    background-image: url("./BOTONESARBOLES/Crear.png");
+    background-image: url("./images/Crear.png");
 }
-
 .buttonAbrir {
     border-radius: 80px;
-    background-image: url("./BOTONESARBOLES/ABRIR.png");
+    background-image: url("./images/ABRIR.png");
 }
 .buttonBuscar{
     border-radius: 80px;
-    background-image: url("./BOTONESARBOLES/BUSCAR.png");
+    background-image: url("./images/BUSCAR.png");
 }
 .buttonDetalles {
     border-radius: 80px;
-    background-image: url("./BOTONESARBOLES/DETALLES.png");
+    background-image: url("./images/DETALLES.png");
 }
 
 .buttonInsertar {
     border-radius: 80px;
-    background-image: url("./BOTONESARBOLES/INSERTAR.png");
+    background-image: url("./images/INSERTAR.png");
 }
 .buttonEliminar {
     /* border-radius: 80px; */
