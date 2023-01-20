@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "entry.c"
-#include "grapho.c"
+// #include "grapho.c"
 
 int numNodes;
 GtkWidget *node;
@@ -15,7 +15,7 @@ static void advertencia (GtkWindow *parent, gchar *message) {
     flags = GTK_DIALOG_DESTROY_WITH_PARENT;
     dialog = gtk_dialog_new_with_buttons ("Message",NULL,flags,("_OK"), GTK_RESPONSE_NONE,NULL);
     content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-    label = gtk_label_new (message);(bin->str)[i];
+    label = gtk_label_new (message);
 
     // Ensure that the dialog box is destroyed when the user responds
 
@@ -128,7 +128,7 @@ void createGrafo() {
         * 
         */
         
-        struct Node *grapho = NULL;
+        // struct Node *grapho = NULL;
 
         int root = values[0]; // Valor contenido en la raiz
         int parents[numNodes]; // Vector: contiene indice a el que apunta su enlace "i" 
@@ -167,7 +167,7 @@ void createGrafo() {
     }
 }
 
-static void create (GtkApplication *app, gpointer user_data) {
+static void create (GtkWidget *widget, gpointer user_data) {
     GtkWidget *mainWindow, *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
     GtkWidget *nameField;
     GtkWidget *buttonCreate, *buttonBoxCreate;
@@ -224,7 +224,7 @@ static void create (GtkApplication *app, gpointer user_data) {
     gtk_fixed_put(GTK_FIXED(fixed), buttonBoxCreate, 348, 240);
 
     // Create window for the capture values the nodes and selection the type order
-    mainWindow = gtk_application_window_new(app);
+    mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_position(GTK_WINDOW(mainWindow), GTK_WIN_POS_CENTER);
     gtk_window_set_title (GTK_WINDOW (mainWindow), "Generar nuevo arbol");
     gtk_window_set_default_size(GTK_WINDOW(mainWindow), 820, 500);
@@ -273,6 +273,7 @@ static void activate (GtkApplication* app, gpointer user_data) {
     buttonDetalles = gtk_button_new();
     tex = gtk_fixed_new ();
     buttonCrear = gtk_button_new();
+    g_signal_connect(buttonCrear, "clicked", G_CALLBACK(create), NULL);
     buttonRecorrido = gtk_combo_box_new();
     buttonInsertar = gtk_button_new();
     //buttonCrear = gtk_button_new_with_label ( "buttonCrear");

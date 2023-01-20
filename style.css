@@ -38,6 +38,51 @@
     border: none;
 }
 
+.buttonCrear {
+    border-radius: 80px;
+    background-image: url("./BOTONESARBOLES/Crear.png");
+}
+
+.buttonAbrir {
+    border-radius: 80px;
+    background-image: url("./BOTONESARBOLES/ABRIR.png");
+}
+.buttonBuscar{
+    border-radius: 80px;
+    background-image: url("./BOTONESARBOLES/BUSCAR.png");
+}
+.buttonDetalles {
+    border-radius: 80px;
+    background-image: url("./BOTONESARBOLES/DETALLES.png");
+}
+
+.buttonInsertar {
+    border-radius: 80px;
+    background-image: url("./BOTONESARBOLES/INSERTAR.png");
+}
+.buttonEliminar {
+    /* border-radius: 80px; */
+    background-image: url("./Arbol//ELIMINAR.png");
+    background-position: center;
+}
+.combo-box {
+    background-image: url("path/to/image.png");
+    background-repeat: no-repeat;
+}
+
+/* Subelement;hover for buttons */
+.buttonCrear:hover {
+    border-color: aqua;
+    box-shadow: 0px 0px 15px rgb(255, 255, 255);
+}
+#cajita{
+    /* background:rgb(0, 255, 242); */
+   background-image: url("./Arbol/background.png");
+}
+
+#cajitaInt{
+    background:rgb(5, 61, 58); 
+}
 
 
 
