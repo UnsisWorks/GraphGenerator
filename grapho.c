@@ -5,14 +5,17 @@ int max(int a, int b) {
     return (a > b)? a : b;
 }
 
-
 // Define la estructura del nodo del AVL tree
 struct Node {
     int key;
+    int id; // nuevo campo para el ID del nodo
     int height;
     struct Node *left;
     struct Node *right;
+    struct Node *child; //nuevo campo para el nodo hijo
 };
+
+// struct Node* mainRoot; // Variable global para almacenar el nodo raíz del árbol
 
 // Obtiene la altura de un nodo
 int height(struct Node *N) {
@@ -29,12 +32,14 @@ int getBalance(struct Node *N) {
 }
 
 // Crea un nuevo nodo
-struct Node* newNode(int key) {
+struct Node* newNode(int key, int id) {
     struct Node* node = (struct Node*)malloc(sizeof(struct Node));
     node->key = key;
+    node->id = id;
     node->height = 1;
     node->left = NULL;
     node->right = NULL;
+    node->child = NULL;
     return(node);
 }
 
@@ -73,57 +78,65 @@ struct Node *leftRotate(struct Node *x) {
 }
 
 // Inserta un nuevo valor en el AVL tree
-struct Node* insert(struct Node* node, int key) {
+struct Node* insert(struct Node* node, int key, int id) {
+    
     // Realiza una inserción normal en un árbol binario de búsqueda
-    if (node == NULL)
-        return(newNode(key));
+    if (node == NULL) {
+        // mainRoot = ;
+        // puts("insertado nodo raiz");
+        return(newNode(key, id));
+    }
 
-    if (key < node->key)
-        node->left  = insert(node->left, key);
-    else if (key > node->key)
-        node->right = insert(node->right, key);
-    else // No se permite tener valores repetidos
+    if (key < node->key) {
+        node->left = insert(node->left, key, id);
+        node->left->child = node; // se asigna el nodo actual como el padre del nodo insertado
+    } else if (key > node->key) {
+        node->right = insert(node->right, key, id);
+        node->right->child = node; // se asigna el nodo actual como el padre del nodo insertado
+    } else {// No se permite tener valores repetidos
+        puts("valor repetido al insertar");
         return node;
+    }
 
     // Actualiza la altura del nodo actual
     node->height = 1 + (height(node->left) > height(node->right) ? height(node->left) : height(node->right));
 
     // Obtiene el factor de equilibrio del nodo actual
-  int balance = getBalance(node);
-  // Si el factor de equilibrio es mayor a 1 o menor a -1, entonces el árbol se ha desequilibrado
-  // y se necesita realizar una rotación
+    int balance = getBalance(node);
 
-  // Caso Left Left
-  if (balance > 1 && key < node->left->key)
-    return rightRotate(node);
+    // Si el factor de equilibrio es mayor a 1, significa que el subárbol izquierdo es más pesado
+    // y se necesita realizar una rotación a la derecha o una rotación doble a la izquierda
+    if (balance > 1) {
+        // Si el factor de equilibrio del hijo izquierdo es menor a 0, significa que el subárbol derecho
+        // es más pesado, por lo que se necesita realizar una rotación doble a la izquierda
+        if (getBalance(node->left) < 0) {
+            node->left = leftRotate(node->left);
+        }
+        return rightRotate(node);
+    }
 
-  // Caso Right Right
-  if (balance < -1 && key > node->right->key)
-    return leftRotate(node);
+    // Si el factor de equilibrio es menor a -1, significa que el subárbol derecho es más pesado
+    // y se necesita realizar una rotación a la izquierda o una rotación doble a la derecha
+    if (balance < -1) {
+        // Si el factor de equilibrio del hijo derecho es mayor a 0, significa que el subárbol izquierdo
+        // es más pesado, por lo que se necesita realizar una rotación doble a la derecha
+        if (getBalance(node->right) > 0) {
+            node->right = rightRotate(node->right);
+        }
+        return leftRotate(node);
+    }
 
-  // Caso Left Right
-  if (balance > 1 && key > node->left->key) {
-    node->left =  leftRotate(node->left);
-    return rightRotate(node);
-  }
-
-  // Caso Right Left
-  if (balance < -1 && key < node->right->key) {
-    node->right = rightRotate(node->right);
-    return leftRotate(node);
-  }
-
-  // Si no se desequilibra, retorna el nodo raíz actual
-  return node;
+    // Retorna el nodo raíz actual
+    return node;
 
 }
 
-void preOrder(struct Node *root) {
-    if(root != NULL) {
-        printf("%d ", root->key);
-        preOrder(root->left);
-        preOrder(root->right);
-    }
+void freeAVLTree(struct Node* node){
+    if(node==NULL)
+        return;
+    freeAVLTree(node->left);
+    freeAVLTree(node->right);
+    free(node);
 }
 
 struct Node *minValueNode(struct Node* node) {
@@ -213,11 +226,18 @@ struct Node* deleteNode(struct Node* root, int key) {
     return root;
 }
 
+void preOrder(struct Node *root) {
+    if(root != NULL) {
+        printf("%d (id: %d) ", root->key, root->id);
+        preOrder(root->left);
+        preOrder(root->right);
+    }
+}
 
 void inOrder(struct Node *root) {
     if(root != NULL) {
         inOrder(root->left);
-        printf("%d ", root->key);
+        printf("%d (id: %d) ", root->key, root->id);
         inOrder(root->right);
     }
 }
@@ -226,6 +246,44 @@ void postOrder(struct Node *root) {
     if(root != NULL) {
         postOrder(root->left);
         postOrder(root->right);
-        printf("%d ", root->key);
+        printf("%d (id: %d) ", root->key, root->id);
     }
 }
+
+
+// struct Node* search(int id) {
+//     return searchHelper(root, id);
+// }
+
+struct Node* searchHelper(struct Node* node, int id) {
+    // Si el nodo es nulo o el id coincide, retorna el nodo
+    if (node == NULL || node->id == id)
+        return node;
+
+    // Busca en el subárbol izquierdo
+    struct Node* left = searchHelper(node->left, id);
+    if(left != NULL)
+        return left;
+
+    // Busca en el subárbol derecho
+    return searchHelper(node->right, id);
+}
+// struct Node* search(int id) {
+    // struct Node* current = mainRoot; // Obtiene el nodo raíz
+//     while (current != NULL) {
+//         if (current->id == id) { // Si el id del nodo actual es igual al id buscado, se retorna el nodo
+//             return current;
+//         }
+//         if (current->id > id) { // Si el id del nodo actual es mayor al id buscado, se busca en el subárbol izquierdo
+//             current = current->left;
+//         } else { // Si el id del nodo actual es menor al id buscado, se busca en el subárbol derecho
+//             current = current->right;
+//         }
+//     }
+//     return NULL; // Si no se encuentra el nodo, se retorna NULL
+// }
+
+// void main() {
+//     struct Node* arbolito;
+//     insert(arbolito, 10, 1);
+// }

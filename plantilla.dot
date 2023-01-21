@@ -2,7 +2,7 @@ digraph L {
     node[shape = doublecircle fillcolor = "#c8131300" style = filled]
     
     label = "Matriz disperza" // Pie de grafo
-    bgcolor = "#07836a80" // background
+    bgcolor = "#07836a00" // background
     
     node [shape=none, image="./images/Árboles/Esfera3.png"];
     a [label="sphere"];

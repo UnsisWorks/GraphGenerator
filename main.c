@@ -6,6 +6,9 @@
 
 int numNodes;
 GtkWidget *node;
+struct Node *grapho;
+struct Node *loadGrapho;
+GtkWidget *window, *cajitaInterior, *showGrapho;
 
 static void advertencia (GtkWindow *parent, gchar *message) {
     GtkWidget *dialog, *label, *content_area;
@@ -28,14 +31,12 @@ static void advertencia (GtkWindow *parent, gchar *message) {
 
 }
 
-
-void ExportToDot(gint values[numNodes], int parents[numNodes]) {
+void ExportToDot(gint values[numNodes], char pieGrafo[]) {
     char name[] = "Holaaa";
     char shapeForm[] = "egg";
     char style[] = "filled";
     char fillColor[] = "#c81313";
-    char bgColor[] = "#00ff0d";
-    char pieGrafo[] = "Matriz disperza";
+    char bgColor[] = "#07836a00";
     char edgeDir[] = "normal";
 
     FILE *arbol = fopen("./data.dot", "w");
@@ -45,35 +46,51 @@ void ExportToDot(gint values[numNodes], int parents[numNodes]) {
     fprintf(arbol, "\tlabel = \"%s\"\n", pieGrafo);
     fprintf(arbol, "\tbgcolor = \"%s\"\n\n", bgColor);
 
-    fprintf(arbol, "\tsubgraph subGraph {\n");
-    fprintf(arbol, "\t\traiz[label = \"%d\"]\n", values[0]);
-    fprintf(arbol, "\t\tedge[dir = \"%s\"]\n", edgeDir);
+    fprintf(arbol, "\tsubgraph tsubgraph1 {\n");
+    // fprintf(arbol, "\t\traiz[label = \"%d\"]\n", values[0]);
+    fprintf(arbol, "\t\tedge[dir = \"%s\" color = \"#4613c8\"]\n", edgeDir);
 
     // Create nodes needed
-    for (int i = 1; i < numNodes; i++) {
-        fprintf(arbol, "\t\tfila%d[label = \"%d\" group=1]\n", i - 1, values[i]);
+    for (int i = 0; i < numNodes; i++) {
+        fprintf(arbol, "\t\tfila%d[label = \"%d\" group=1]\n", i, values[i]);
     }
     
-    // Establece los punteros entre nodos. Basado en vectores enlazados
-    fprintf(arbol, "\n\t\traiz -> fila0\n");
-    fprintf(arbol, "\t\traiz -> fila1\n");  
-    
-    if (numNodes > 3) {
-        for (int i = 1; i < numNodes - 1; i++) {
-            fprintf(arbol, "\t\tfila%d -> fila%d\n", i, parents[i + 1]); 
-            
+    // Establece los punteros entre nodos. Basado en id y datos TDA
+    struct Node *aux;
+    puts("antes de preorder");
+    preOrder(grapho);
+    puts("despues de preorder");
+    postOrder(grapho);
+    puts("despues de postorder");
+
+    fprintf(arbol, "\n");
+    for (int i = 0; i < numNodes; i++) {
+        aux = searchHelper(grapho, i);
+        if(aux == NULL){
+            puts("Nodo nulo");
+        } else {
+
+            // Set node rigth
+            if ((aux -> right != NULL)) {
+                puts("Entro");
+                fprintf(arbol, "\t\tfila%d -> fila%d\n", aux -> id, aux -> right -> id);
+            }
+
+            // Set node left
+            if (aux -> left != NULL) {
+                fprintf(arbol, "\t\tfila%d -> fila%d\n", aux -> id, aux -> left -> id);
+            }
         }
     }
-
     
-    // fprintf(arbol, "");  
-
     fprintf(arbol, "\n\t}");
     fprintf(arbol, "\n}");
     fclose(arbol);
+
+    system("dot -Tpng -o data.png data.dot");
 }
 
-void createGrafo() {
+void createGrafo(GtkWidget *button, gpointer user_data) {
     // Get input the user
     GString *input = g_string_new(gtk_entry_get_text(GTK_ENTRY(node)));  
 
@@ -121,53 +138,30 @@ void createGrafo() {
                 break;
             }
         }
-
-       /*
-        * Create Grapho with values in 'values'
-        * [0][0] = Raiz
-        * 
-        */
-        
-        struct Node *grapho = NULL;
-
-        int root = values[0]; // Valor contenido en la raiz
-        int parents[numNodes]; // Vector: contiene indice a el que apunta su enlace "i" 
-        int father = 0; // Padre actual en cada iteracion
-        int left = 0; // sub grafo Izquierdo. Valores menores a la raiz
-        int rigth = 0; // sub grafo Derecho. Valores mayores a la raiz
-
-        for (int i = 1; i < numNodes; i++) {
-
-            if (father != 0) {
-                if (values[i] < root) {
-                    root = left;
-                } else {
-                    root = rigth;
-                }
-            }
-
-            // Nodos menores a la raiz -> Izquirda
-            if (values[i] < root) {
-                parents[i] = father;
-                left++;
-            }
-            // Nodos mayores a la raiz -> Derecha
-            if (values[i] > root) {
-                parents[i] = father;
-                rigth++;
-            }
-            printf("value: %d pos: %d\n", values[i], parents[i]);
-                    printf("root = %d\n", root);
-            father++;
+        // GString name = g_string_new(gtk_entry_get_text(GTK_ENTRY(name)));
+        for (int i = 0; i < numNodes; i++) {
+            grapho = insert(grapho, values[i], i);
+            // puts("add node");
         }
-        
-        ExportToDot(values, parents);
+        inOrder(grapho);
+        puts("Order");
+        ExportToDot(values, "Pie de grapho");
+
+        // Sets grapho as the main. Change window 
+        GtkWidget *mainWindow = GTK_WIDGET(user_data);
+        gtk_widget_set_name(GTK_WIDGET(showGrapho), "show-grapho");
+        gtk_widget_set_visible(GTK_WIDGET(window), TRUE);
+        gtk_widget_set_visible(GTK_WIDGET(mainWindow), FALSE);
+        puts("actual");
     } else {
         puts("Vacia");
     }
 }
 
 static void create (GtkWidget *widget, gpointer user_data) {
+
+    gtk_widget_set_visible(GTK_WIDGET(window), FALSE);
+
     GtkWidget *mainWindow, *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
     GtkWidget *nameField;
     GtkWidget *buttonCreate, *buttonBoxCreate;
@@ -217,7 +211,7 @@ static void create (GtkWidget *widget, gpointer user_data) {
     gtk_widget_set_size_request(GTK_WIDGET(buttonCreate), 144, -1);
     buttonBoxCreate = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
     gtk_container_add(GTK_CONTAINER(buttonBoxCreate), buttonCreate);
-    g_signal_connect(buttonCreate, "clicked", G_CALLBACK(createGrafo), NULL);
+
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonCreate), "button-create");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonBoxCreate), "button-box-create");
 
@@ -229,8 +223,9 @@ static void create (GtkWidget *widget, gpointer user_data) {
     gtk_window_set_title (GTK_WINDOW (mainWindow), "Generar nuevo arbol");
     gtk_window_set_default_size(GTK_WINDOW(mainWindow), 820, 500);
     gtk_window_set_resizable(GTK_WINDOW(mainWindow), TRUE);
-        gtk_widget_set_size_request(GTK_WIDGET(mainWindow), 0, -1);
+    gtk_widget_set_size_request(GTK_WIDGET(mainWindow), 0, -1);
 
+    g_signal_connect(buttonCreate, "clicked", G_CALLBACK(createGrafo), mainWindow);
 
     gtk_widget_set_name(GTK_WIDGET(background), "background");
     gtk_widget_set_name(GTK_WIDGET(entryBox), "entry-box");
@@ -248,9 +243,31 @@ static void create (GtkWidget *widget, gpointer user_data) {
     gtk_container_add(GTK_CONTAINER(mainWindow), background);
     gtk_widget_show_all (mainWindow);
 }
+
+static void getFileName (GtkApplication* app, gpointer user_data) {
+
+    // Crea un diálogo de selección de archivos
+        GtkWidget *dialog = gtk_file_chooser_dialog_new("Seleccionar archivo",
+                                                        GTK_WINDOW(window),
+                                                        GTK_FILE_CHOOSER_ACTION_OPEN,
+                                                        "_Cancelar", GTK_RESPONSE_CANCEL,
+                                                        "_Abrir", GTK_RESPONSE_ACCEPT,
+                                                        NULL);
+
+        // Muestra el diálogo y espera a que el usuario seleccione un archivo
+        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+            // Obtiene la ruta del archivo seleccionado
+            char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+            printf("Archivo seleccionado: %s\n", filename);
+            g_free(filename);
+        }
+
+        // Destruye el diálogo
+        gtk_widget_destroy(dialog);
+}
+
 static void activate (GtkApplication* app, gpointer user_data) {
 
-    GtkWidget *window;
     GtkWidget *tex;
     GtkWidget *buttonAbrir;
     GtkWidget *buttonBuscar;
@@ -261,7 +278,7 @@ static void activate (GtkApplication* app, gpointer user_data) {
     GtkWidget *buttonRecorrido;
     GtkWidget *buttonInsertar;
     GtkWidget *cajita;
-    GtkWidget *cajitaInterior;
+    GtkWidget *buttonSave;
     GtkCssProvider *cssProvider;
     cssProvider = gtk_css_provider_new();
     //declaraciones
@@ -272,8 +289,10 @@ static void activate (GtkApplication* app, gpointer user_data) {
     buttonBuscar =  gtk_button_new();
     buttonEliminar =  gtk_combo_box_new();
     buttonDetalles = gtk_button_new();
+    buttonSave = gtk_button_new();
     tex = gtk_fixed_new ();
     g_signal_connect(buttonCrear, "clicked", G_CALLBACK(create), NULL);
+    g_signal_connect(buttonAbrir, "clicked", G_CALLBACK(getFileName), NULL);
     buttonRecorrido = gtk_combo_box_new();
     buttonInsertar = gtk_button_new();
     
@@ -284,9 +303,13 @@ static void activate (GtkApplication* app, gpointer user_data) {
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonAbrir), "buttonAbrir");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonRecorrido), "buttonRecorrido");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonInsertar), "buttonInsertar");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonSave), "buttonSave");
     
     cajita = gtk_box_new (GTK_ORIENTATION_VERTICAL,0);
     cajitaInterior = gtk_box_new (GTK_ORIENTATION_VERTICAL,0);
+    showGrapho = gtk_box_new (GTK_ORIENTATION_VERTICAL,0);
+    // gtk_widget_set_margin_start(GTK_WIDGET(showGrapho), 160);
+
 
     b = gtk_label_new ("T---I---T---U---L---O:");
 
@@ -316,23 +339,22 @@ static void activate (GtkApplication* app, gpointer user_data) {
 
     gtk_container_add(GTK_CONTAINER(window), cajita);
     gtk_container_add(GTK_CONTAINER(cajita), tex);
-    //gtk_container_add(GTK_CONTAINER(tex), cajitaInterior);
+    // gtk_container_add(GTK_CONTAINER(cajitaInterior), showGrapho);
+    gtk_box_set_center_widget(GTK_BOX(cajitaInterior), showGrapho);
     gtk_widget_set_name(GTK_WIDGET(cajita), "cajita");
     gtk_widget_set_name(GTK_WIDGET(cajitaInterior), "cajitaInt");
 
     //gtk_container_add(GTK_CONTAINER(buttonAbrir), entrada);
     gtk_fixed_put (GTK_FIXED(tex),b, 550, 25);
-    gtk_fixed_put (GTK_FIXED(tex),buttonAbrir, 480, 50);
+    gtk_fixed_put (GTK_FIXED(tex), buttonAbrir, 480, 50);
     gtk_fixed_put (GTK_FIXED(tex), buttonCrear, 280, 50);
     gtk_fixed_put (GTK_FIXED(tex), buttonInsertar, 680, 50);
-    gtk_fixed_put (GTK_FIXED(tex),buttonBuscar, 880, 50);
+    gtk_fixed_put (GTK_FIXED(tex), buttonBuscar, 880, 50);
 
-    gtk_fixed_put (GTK_FIXED(tex),buttonEliminar, 540, 150);
-
-    gtk_fixed_put (GTK_FIXED(tex),buttonDetalles, 340, 150);
-
-    gtk_fixed_put (GTK_FIXED(tex), buttonRecorrido, 740, 150);
-
+    gtk_fixed_put (GTK_FIXED(tex),buttonEliminar, 480, 150);
+    gtk_fixed_put (GTK_FIXED(tex),buttonDetalles, 280, 150);
+    gtk_fixed_put (GTK_FIXED(tex), buttonRecorrido, 680, 150);
+    gtk_fixed_put (GTK_FIXED(tex), buttonSave, 880, 150);
     gtk_fixed_put (GTK_FIXED(tex), cajitaInterior, 310, 220);
 
     // gtk_button_clicked (GTK_BUTTON (buttonCrear));
@@ -344,7 +366,9 @@ static void activate (GtkApplication* app, gpointer user_data) {
     gtk_widget_set_size_request (GTK_WIDGET(buttonDetalles),150,35);
     gtk_widget_set_size_request (GTK_WIDGET(buttonRecorrido),150,35);
     gtk_widget_set_size_request (GTK_WIDGET(buttonInsertar),150,35);
-    gtk_widget_set_size_request (GTK_WIDGET(cajitaInterior),700,400);
+    gtk_widget_set_size_request (GTK_WIDGET(buttonSave),150, 35);
+    gtk_widget_set_size_request (GTK_WIDGET(cajitaInterior),402,400);
+    gtk_widget_set_size_request (GTK_WIDGET(showGrapho),500,400);
     // Load CSS file
 
     gtk_css_provider_load_from_path(cssProvider, "./style.css", NULL);

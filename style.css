@@ -61,6 +61,10 @@
     border-radius: 80px;
     background-image: url("./images/INSERTAR.png");
 }
+.buttonSave{
+    background-image: url("./images/GUARDAR.png");
+    border-radius: 80px;
+}
 .buttonEliminar {
     /* border-radius: 80px; */
     background-image: url("./Arbol//ELIMINAR.png");
@@ -82,9 +86,13 @@
 }
 
 #cajitaInt{
-    background:rgb(5, 61, 58); 
+    background-image: url("./images/Pino.png");
+    background-repeat: no-repeat;
 }
-
+#show-grapho {
+    background-image: url("./data.png");
+    background-repeat: no-repeat;
+}
 
 
 
