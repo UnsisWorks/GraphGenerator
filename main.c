@@ -143,9 +143,12 @@ void createGrafo(GtkWidget *button, gpointer user_data) {
             grapho = insert(grapho, values[i], i);
             // puts("add node");
         }
-        inOrder(grapho);
+        // inOrder(grapho);
         puts("Order");
         ExportToDot(values, "Pie de grapho");
+
+        loadGrapho = grapho;
+        freeAVLTree(grapho);
 
         // Sets grapho as the main. Change window 
         GtkWidget *mainWindow = GTK_WIDGET(user_data);
@@ -244,26 +247,104 @@ static void create (GtkWidget *widget, gpointer user_data) {
     gtk_widget_show_all (mainWindow);
 }
 
-static void getFileName (GtkApplication* app, gpointer user_data) {
+gchar* select_folder_path() {
+    GtkWidget *dialog;
+    gint res;
+    gchar *filename;
 
-    // Crea un diálogo de selección de archivos
-        GtkWidget *dialog = gtk_file_chooser_dialog_new("Seleccionar archivo",
-                                                        GTK_WINDOW(window),
-                                                        GTK_FILE_CHOOSER_ACTION_OPEN,
-                                                        "_Cancelar", GTK_RESPONSE_CANCEL,
-                                                        "_Abrir", GTK_RESPONSE_ACCEPT,
-                                                        NULL);
+    dialog = gtk_file_chooser_dialog_new ("Guardar archivo",
+                                        GTK_WINDOW(window),
+                                        GTK_FILE_CHOOSER_ACTION_SAVE,
+                                        "_Cancelar", GTK_RESPONSE_CANCEL,
+                                        "_Guardar", GTK_RESPONSE_ACCEPT,
+                                        NULL);
+    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "nuevo_grafo.bin");
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
+    if (res == GTK_RESPONSE_ACCEPT)
+    {
+        filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+        //guardar archivo con la ruta filename
+        // g_free (filename);
+    }
+    gtk_widget_destroy (dialog);
 
-        // Muestra el diálogo y espera a que el usuario seleccione un archivo
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-            // Obtiene la ruta del archivo seleccionado
-            char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-            printf("Archivo seleccionado: %s\n", filename);
-            g_free(filename);
+    return filename;
+}
+
+
+static void saveGrapho (GtkApplication* app, gpointer user_data) {
+    gchar* path = select_folder_path();
+
+    if((strcmp(path, "") != 0) && (loadGrapho != NULL)){
+
+        // strcat(path, "/grapho.bin");
+        printf("path: %s\n", path);
+
+        // Abre el archivo en modo escritura binaria
+        FILE *file = fopen(path, "wb");
+        if (file == NULL) {
+            printf("Error al abrir el archivo");
+            // return void;
+        } else {
+
+            // Escribe el struct en el archivo
+            fwrite(&loadGrapho, sizeof(loadGrapho), 1, file);
+
+            // Cierra el archivo
+            fclose(file);
+            puts("Guardado");
         }
+    } else {
+            puts("No gardado");
+    }
 
-        // Destruye el diálogo
-        gtk_widget_destroy(dialog);
+}
+
+gchar* getFileName () {
+    GtkWidget *dialog;
+    gchar *filename;
+    // Crea un diálogo de selección de archivos
+    dialog = gtk_file_chooser_dialog_new("Seleccionar archivo",
+                                                    GTK_WINDOW(window),
+                                                    GTK_FILE_CHOOSER_ACTION_OPEN,
+                                                    "_Cancelar", GTK_RESPONSE_CANCEL,
+                                                    "_Abrir", GTK_RESPONSE_ACCEPT,
+                                                    NULL);
+
+    // Muestra el diálogo y espera a que el usuario seleccione un archivo
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        // Obtiene la ruta del archivo seleccionado
+        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    }
+
+    // Destruye el diálogo
+    gtk_widget_destroy(dialog);
+        printf("Archivo seleccionado: %s\n", filename);
+    return filename;
+}
+
+static void openFile (GtkApplication* app, gpointer user_data) {
+    puts("1");
+    gchar *path = getFileName();
+    puts("2");
+    printf("Archivo: %s\n", path);
+    // Valida que se seleccione un archivo
+    if(strcmp(path, "") != 0){
+        puts("3");
+        FILE *file = fopen(path, "rb");
+
+        if (file != NULL) {
+            fread(&loadGrapho, sizeof(struct Node), 1, file);
+            puts("4");
+            int *vector = (int*) malloc(sizeof(int) * 10); // Crea un vector con espacio para 1 entero
+            puts("5");
+            inOrder(loadGrapho, vector);
+            puts("6");
+            ExportToDot(vector, "Sin nombre");
+
+        }
+        fclose(file);
+    }    
 }
 
 static void activate (GtkApplication* app, gpointer user_data) {
@@ -292,7 +373,8 @@ static void activate (GtkApplication* app, gpointer user_data) {
     buttonSave = gtk_button_new();
     tex = gtk_fixed_new ();
     g_signal_connect(buttonCrear, "clicked", G_CALLBACK(create), NULL);
-    g_signal_connect(buttonAbrir, "clicked", G_CALLBACK(getFileName), NULL);
+    g_signal_connect(buttonAbrir, "clicked", G_CALLBACK(openFile), NULL);
+    g_signal_connect(buttonSave, "clicked", G_CALLBACK(saveGrapho), NULL);
     buttonRecorrido = gtk_combo_box_new();
     buttonInsertar = gtk_button_new();
     

@@ -6,9 +6,11 @@ digraph Holaaa {
 	subgraph tsubgraph1 {
 		edge[dir = "normal" color = "#4613c8"]
 		fila0[label = "12" group=1]
-		fila1[label = "34" group=1]
+		fila1[label = "45" group=1]
+		fila2[label = "67" group=1]
 
-		fila0 -> fila1
+		fila1 -> fila2
+		fila1 -> fila0
 
 	}
 }
