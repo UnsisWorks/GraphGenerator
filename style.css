@@ -88,12 +88,18 @@
 #cajitaInt{
     background-image: url("./images/Pino.png");
     background-repeat: no-repeat;
+    background-position: center;
 }
 #show-grapho {
     background-image: url("./data.png");
     background-repeat: no-repeat;
+    background-position: center;
 }
-
+.b {
+    color: whitesmoke;
+    font-size: 22px;
+    font-weight: 800;
+}
 
 
 

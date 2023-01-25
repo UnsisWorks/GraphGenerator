@@ -4,11 +4,16 @@
 #include "entry.c"
 #include "grapho.c"
 
+typedef struct structWidgets {
+    GtkWidget *mainWindow;
+    GtkWidget *nameField;
+} widgets;
+
 int numNodes;
 GtkWidget *node;
 struct Node *grapho;
 struct Node *loadGrapho;
-GtkWidget *window, *cajitaInterior, *showGrapho;
+GtkWidget *window, *cajitaInterior, *showGrapho, *mainWindow;
 
 static void advertencia (GtkWindow *parent, gchar *message) {
     GtkWidget *dialog, *label, *content_area;
@@ -31,11 +36,16 @@ static void advertencia (GtkWindow *parent, gchar *message) {
 
 }
 
+
+// static void advertencia (GtkWindow *parent, gpointer user_data) {
+
+// }
+
 void ExportToDot(gint values[numNodes], char pieGrafo[]) {
     char name[] = "Holaaa";
     char shapeForm[] = "egg";
     char style[] = "filled";
-    char fillColor[] = "#c81313";
+    char fillColor[] = "transparent";
     char bgColor[] = "#07836a00";
     char edgeDir[] = "normal";
 
@@ -45,6 +55,7 @@ void ExportToDot(gint values[numNodes], char pieGrafo[]) {
 
     fprintf(arbol, "\tlabel = \"%s\"\n", pieGrafo);
     fprintf(arbol, "\tbgcolor = \"%s\"\n\n", bgColor);
+    fprintf(arbol, "\tnode [shape=none, image=\"./images/Árboles/Esfera3.png\"];\n\n");
 
     fprintf(arbol, "\tsubgraph tsubgraph1 {\n");
     // fprintf(arbol, "\t\traiz[label = \"%d\"]\n", values[0]);
@@ -90,7 +101,7 @@ void ExportToDot(gint values[numNodes], char pieGrafo[]) {
     system("dot -Tpng -o data.png data.dot");
 }
 
-void createGrafo(GtkWidget *button, gpointer user_data) {
+void createGrafo(GtkWidget *button, widgets *ws) {
     // Get input the user
     GString *input = g_string_new(gtk_entry_get_text(GTK_ENTRY(node)));  
 
@@ -143,7 +154,7 @@ void createGrafo(GtkWidget *button, gpointer user_data) {
             grapho = insert(grapho, values[i], i);
             // puts("add node");
         }
-        // inOrder(grapho);
+        inOrder(grapho);
         puts("Order");
         ExportToDot(values, "Pie de grapho");
 
@@ -151,21 +162,21 @@ void createGrafo(GtkWidget *button, gpointer user_data) {
         freeAVLTree(grapho);
 
         // Sets grapho as the main. Change window 
-        GtkWidget *mainWindow = GTK_WIDGET(user_data);
+        puts("aqui actual");
+        // GtkWidget *mainWindow = GTK_WIDGET(ws -> mainWindow);
+        gtk_widget_set_visible(GTK_WIDGET(mainWindow), FALSE);
         gtk_widget_set_name(GTK_WIDGET(showGrapho), "show-grapho");
         gtk_widget_set_visible(GTK_WIDGET(window), TRUE);
-        gtk_widget_set_visible(GTK_WIDGET(mainWindow), FALSE);
-        puts("actual");
     } else {
         puts("Vacia");
     }
 }
 
 static void create (GtkWidget *widget, gpointer user_data) {
-
+    free(grapho);
     gtk_widget_set_visible(GTK_WIDGET(window), FALSE);
 
-    GtkWidget *mainWindow, *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
+    GtkWidget *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
     GtkWidget *nameField;
     GtkWidget *buttonCreate, *buttonBoxCreate;
     // GtkCssProvider *cssProvider;
@@ -228,7 +239,10 @@ static void create (GtkWidget *widget, gpointer user_data) {
     gtk_window_set_resizable(GTK_WINDOW(mainWindow), TRUE);
     gtk_widget_set_size_request(GTK_WIDGET(mainWindow), 0, -1);
 
-    g_signal_connect(buttonCreate, "clicked", G_CALLBACK(createGrafo), mainWindow);
+    // Set values for param g_signal
+    widgets parameter = {mainWindow, nameField};
+
+    g_signal_connect(buttonCreate, "clicked", G_CALLBACK(createGrafo), &parameter);
 
     gtk_widget_set_name(GTK_WIDGET(background), "background");
     gtk_widget_set_name(GTK_WIDGET(entryBox), "entry-box");
@@ -271,6 +285,22 @@ gchar* select_folder_path() {
     return filename;
 }
 
+void saveTree(struct Node *node, FILE *archivo) {
+
+    fwrite(&node, sizeof(struct Node*), 1, archivo);
+    puts("3");
+    if (node -> left != NULL) {
+        puts("izqui");
+        saveTree(node->left, archivo);
+    }
+    if (node -> right != NULL) {
+        puts("derec");
+        saveTree(node->right, archivo);
+    }
+}
+
+
+
 
 static void saveGrapho (GtkApplication* app, gpointer user_data) {
     gchar* path = select_folder_path();
@@ -288,7 +318,7 @@ static void saveGrapho (GtkApplication* app, gpointer user_data) {
         } else {
 
             // Escribe el struct en el archivo
-            fwrite(&loadGrapho, sizeof(loadGrapho), 1, file);
+            saveTree(loadGrapho, file);
 
             // Cierra el archivo
             fclose(file);
@@ -334,13 +364,24 @@ static void openFile (GtkApplication* app, gpointer user_data) {
         FILE *file = fopen(path, "rb");
 
         if (file != NULL) {
-            fread(&loadGrapho, sizeof(struct Node), 1, file);
+
+            freeAVLTree(loadGrapho);
+
             puts("4");
-            int *vector = (int*) malloc(sizeof(int) * 10); // Crea un vector con espacio para 1 entero
+            fread(&loadGrapho, sizeof(struct Node), 10, file);
             puts("5");
-            inOrder(loadGrapho, vector);
+            if (loadGrapho == NULL)
+            {
+                puts("Nulo");
+            }
+            
             puts("6");
-            ExportToDot(vector, "Sin nombre");
+            printf("key: %d id: %d\n", height(loadGrapho), 1);
+            puts("7");
+            // int *vector = (int*) malloc(sizeof(int)); // Crea un vector con espacio para 1 entero
+            // int size = 0;
+            // inOrder(loadGrapho);
+            // ExportToDot(vector, "Sin nombre");
 
         }
         fclose(file);
@@ -348,7 +389,6 @@ static void openFile (GtkApplication* app, gpointer user_data) {
 }
 
 static void activate (GtkApplication* app, gpointer user_data) {
-
     GtkWidget *tex;
     GtkWidget *buttonAbrir;
     GtkWidget *buttonBuscar;
@@ -393,23 +433,24 @@ static void activate (GtkApplication* app, gpointer user_data) {
     // gtk_widget_set_margin_start(GTK_WIDGET(showGrapho), 160);
 
 
-    b = gtk_label_new ("T---I---T---U---L---O:");
+    b = gtk_label_new ("GENERADOR DE ARBOLES");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonInsertar), "b");
 
 
     buttonEliminar = gtk_combo_box_text_new();
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonEliminar), "\tEliminar");
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonEliminar), "nodo");
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonEliminar), "elemento");
-    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonEliminar), "dato");
+    // gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonEliminar), "dato");
 
-    buttonRecorrido = gtk_combo_box_text_new();
-    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "\tRecorrido");
-    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "Pre-Orden");
-    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "In-Orden");
-    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "Pos-Orden");
+    // buttonRecorrido = gtk_combo_box_text_new();
+    // gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "\tRecorrido");
+    // gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "Pre-Orden");
+    // gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "In-Orden");
+    // gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(buttonRecorrido), "Pos-Orden");
 
     gtk_combo_box_set_active(GTK_COMBO_BOX(buttonEliminar), 0);
-    gtk_combo_box_set_active(GTK_COMBO_BOX(buttonRecorrido), 0);
+    // gtk_combo_box_set_active(GTK_COMBO_BOX(buttonRecorrido), 0);
 
     //inicializacion de la ventana
     window = gtk_application_window_new (app);
@@ -435,8 +476,8 @@ static void activate (GtkApplication* app, gpointer user_data) {
 
     gtk_fixed_put (GTK_FIXED(tex),buttonEliminar, 480, 150);
     gtk_fixed_put (GTK_FIXED(tex),buttonDetalles, 280, 150);
-    gtk_fixed_put (GTK_FIXED(tex), buttonRecorrido, 680, 150);
-    gtk_fixed_put (GTK_FIXED(tex), buttonSave, 880, 150);
+    gtk_fixed_put (GTK_FIXED(tex), buttonSave, 680, 150);
+    // gtk_fixed_put (GTK_FIXED(tex), buttonSave, 880, 150);
     gtk_fixed_put (GTK_FIXED(tex), cajitaInterior, 310, 220);
 
     // gtk_button_clicked (GTK_BUTTON (buttonCrear));

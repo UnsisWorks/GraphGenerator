@@ -234,24 +234,11 @@ void preOrder(struct Node *root) {
     }
 }
 
-void inOrder(struct Node *root, int vector[]) {
-    puts("-1");
+void inOrder(struct Node *root) {
     if(root != NULL) {
-        puts("-2");
-        vector[0] = 1;
-        puts("-3");
-        inOrder(root->left, vector);
-        puts("-4");
-        // if (root -> id >= size) {
-        //     size = root->id + 1;
-        //     vector = (int*) realloc(vector, sizeof(int) * size);
-        // }
-        printf("%d (id: %d) ", root->key, root->id);
-        vector = (int*) realloc(vector, sizeof(int) * root -> id + 1);
-        puts("-5");
-        vector[root -> id] = root -> key;  
-        puts("-6");
-        inOrder(root->right, vector);
+        inOrder(root->left);
+        printf("%d ", root->key);
+        inOrder(root->right);
     }
 }
 
