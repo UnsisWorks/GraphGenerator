@@ -76,7 +76,7 @@
 }
 
 /* Subelement;hover for buttons */
-.buttonCrear:hover, .buttonAbrir:hover {
+.buttonCrear:hover, .buttonAbrir:hover, .buttonDetalles:hover, .buttonEliminar:hover, .buttonSave:hover, .buttonBuscar:hover, .buttonInsertar:hover{
     border-color: aqua;
     box-shadow: 0px 0px 15px rgb(255, 255, 255);
 }
@@ -100,13 +100,32 @@
     font-size: 22px;
     font-weight: 800;
 }
+.label-details{
+    color: rgb(1, 132, 106);
+    font-size: 18px;
+    font-weight: 800;
+}
+.box-details{
+    background: rgb(69, 1, 108);
+}
 
-
-
-
-
-
-
-
-
+#Aboutbox {
+    background-image: url("./images/AVATARES2.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    /* background-size: ; */
+}
+.buttonAbout{
+    border-radius: 50%;
+    font-size: 22px;
+    font-weight: 900;
+    background: radial-gradient(rgb(0, 92, 157), rgb(2, 141, 254));
+}
+.buttonAbout:hover{
+    font-size: 26px;
+    font-weight: 900;
+    background: radial-gradient(rgb(0, 70, 119), rgb(19, 134, 229));
+    border-color: aqua;
+    box-shadow: 0px 0px 15px rgb(255, 255, 255);
+}
 

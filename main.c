@@ -12,6 +12,7 @@ typedef struct structWidgets {
 int numNodes;
 GtkWidget *node;
 struct Node *grapho;
+GtkWidget *nameField;
 struct Node *loadGrapho;
 GtkWidget *window, *cajitaInterior, *showGrapho, *mainWindow;
 
@@ -37,9 +38,78 @@ static void advertencia (GtkWindow *parent, gchar *message) {
 }
 
 
-// static void advertencia (GtkWindow *parent, gpointer user_data) {
+static void windowAbout (GtkApplication *app, gpointer user_data) {
+  GtkWidget *Aboutwindow;
+  GtkWidget *Aboutbox;
+  GtkCssProvider *cssProvider;
 
-// }
+
+  Aboutbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+
+
+    // Set properties for winow
+    Aboutwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_position(GTK_WINDOW(Aboutwindow), GTK_WIN_POS_CENTER);
+    gtk_window_set_title (GTK_WINDOW (Aboutwindow), "ABOUT");
+    gtk_window_set_default_size (GTK_WINDOW (Aboutwindow), 650, 700);
+    gtk_window_set_resizable(GTK_WINDOW(Aboutwindow), FALSE);
+
+
+    gtk_widget_set_name(GTK_WIDGET(Aboutbox), "Aboutbox");
+
+
+    gtk_container_add(GTK_CONTAINER(Aboutwindow), Aboutbox);
+    gtk_widget_show_all (Aboutwindow);
+
+
+
+}
+
+static void details (GtkWindow *parent, gpointer user_data) {
+    GtkWidget *detWindow = gtk_window_new(GDK_WINDOW_TOPLEVEL);
+    gtk_window_set_default_size(GTK_WINDOW(detWindow), 300, 400);
+    gtk_window_set_resizable(GTK_WINDOW(detWindow), FALSE);
+    gtk_window_set_title(GTK_WINDOW(detWindow), "Detalles");
+    gtk_window_set_position(GTK_WINDOW(detWindow), GTK_WIN_POS_CENTER);
+
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_widget_set_margin_top(GTK_WIDGET(box), 30);
+    gtk_widget_set_name(GTK_WIDGET(box), "box-details");
+
+    char heigthl[20] = "Altura: ";
+    char nodes[30] = "Numero de nodos: ";
+
+    char aux[10];
+    char aux2[10];
+    char aux3[50] = "Nombre: ";
+
+    sprintf(aux, "%d", numNodes);
+    sprintf(aux2, "%d", height(loadGrapho));
+    printf("Alt: %d", height(loadGrapho));
+
+    strcat(heigthl, aux2);
+    strcat(nodes, aux);
+    strcat(aux3, gtk_entry_get_text(GTK_ENTRY(nameField)));
+
+    GtkWidget *labelTitle = gtk_label_new("DETALLES DEL GRAFO");
+    // GtkWidget *label = gtk_label_new("");
+    GtkWidget *labelName = gtk_label_new(aux3);
+    GtkWidget *labelNunNode = gtk_label_new(nodes);
+    GtkWidget *labelHeigth = gtk_label_new(heigthl);
+    // GtkWidget *labelPreOrder =
+
+    gtk_style_context_add_class(gtk_widget_get_style_context(labelTitle), "label-details");
+    gtk_style_context_add_class(gtk_widget_get_style_context(labelName), "label-details");
+    gtk_style_context_add_class(gtk_widget_get_style_context(labelNunNode), "label-details");
+    gtk_style_context_add_class(gtk_widget_get_style_context(labelHeigth), "label-details");
+
+    gtk_container_add(GTK_CONTAINER(detWindow), box);
+    gtk_container_add(GTK_CONTAINER(box), labelTitle);
+    gtk_container_add(GTK_CONTAINER(box), labelName);
+    gtk_container_add(GTK_CONTAINER(box), labelNunNode);
+    gtk_container_add(GTK_CONTAINER(box), labelHeigth);
+    gtk_widget_show_all (detWindow);
+}
 
 void ExportToDot(gint values[numNodes], char pieGrafo[]) {
     char name[] = "Holaaa";
@@ -53,7 +123,7 @@ void ExportToDot(gint values[numNodes], char pieGrafo[]) {
 
     fprintf(arbol, "digraph %s {\n\tnode[shape = %s fillcolor = \"%s\" style = filled]\n", name, shapeForm, fillColor);
 
-    fprintf(arbol, "\tlabel = \"%s\"\n", pieGrafo);
+    fprintf(arbol, "\tlabel = \"%s\"\n", gtk_entry_get_text(GTK_ENTRY(nameField)));
     fprintf(arbol, "\tbgcolor = \"%s\"\n\n", bgColor);
     fprintf(arbol, "\tnode [shape=none, image=\"./images/Árboles/Esfera3.png\"];\n\n");
 
@@ -156,7 +226,10 @@ void createGrafo(GtkWidget *button, widgets *ws) {
         }
         inOrder(grapho);
         puts("Order");
-        ExportToDot(values, "Pie de grapho");
+        char param[40];
+        // const char *name = ç
+        // strcpy(param, name);
+        ExportToDot(values, "hola");
 
         loadGrapho = grapho;
         freeAVLTree(grapho);
@@ -177,7 +250,7 @@ static void create (GtkWidget *widget, gpointer user_data) {
     gtk_widget_set_visible(GTK_WIDGET(window), FALSE);
 
     GtkWidget *fixed, *entryBox, *background, *title, *labelEntrys, *comboBoxCreate;
-    GtkWidget *nameField;
+    
     GtkWidget *buttonCreate, *buttonBoxCreate;
     // GtkCssProvider *cssProvider;
     // text = text_field_new();
@@ -398,6 +471,7 @@ static void activate (GtkApplication* app, gpointer user_data) {
     GtkWidget *b;
     GtkWidget *buttonRecorrido;
     GtkWidget *buttonInsertar;
+    GtkWidget *buttonAbout;
     GtkWidget *cajita;
     GtkWidget *buttonSave;
     GtkCssProvider *cssProvider;
@@ -411,10 +485,13 @@ static void activate (GtkApplication* app, gpointer user_data) {
     buttonEliminar =  gtk_combo_box_new();
     buttonDetalles = gtk_button_new();
     buttonSave = gtk_button_new();
+    buttonAbout = gtk_button_new_with_label("!");
     tex = gtk_fixed_new ();
     g_signal_connect(buttonCrear, "clicked", G_CALLBACK(create), NULL);
     g_signal_connect(buttonAbrir, "clicked", G_CALLBACK(openFile), NULL);
     g_signal_connect(buttonSave, "clicked", G_CALLBACK(saveGrapho), NULL);
+    g_signal_connect(buttonDetalles, "clicked", G_CALLBACK(details), NULL);
+    g_signal_connect(buttonAbout, "clicked", G_CALLBACK(windowAbout), NULL);
     buttonRecorrido = gtk_combo_box_new();
     buttonInsertar = gtk_button_new();
     
@@ -426,6 +503,7 @@ static void activate (GtkApplication* app, gpointer user_data) {
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonRecorrido), "buttonRecorrido");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonInsertar), "buttonInsertar");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonSave), "buttonSave");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonAbout), "buttonAbout");
     
     cajita = gtk_box_new (GTK_ORIENTATION_VERTICAL,0);
     cajitaInterior = gtk_box_new (GTK_ORIENTATION_VERTICAL,0);
@@ -454,7 +532,7 @@ static void activate (GtkApplication* app, gpointer user_data) {
 
     //inicializacion de la ventana
     window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (window), "JARVIS CALCULATOR");//nombre de la ventana
+    gtk_window_set_title (GTK_WINDOW (window), "ARBOLES");//nombre de la ventana
     gtk_window_set_default_size (GTK_WINDOW (window), 1100, 700);//tamaño de la ventana
     //gtk_window_set_resizable (GTK_WINDOW(window), FALSE);
     gtk_window_maximize(GTK_WINDOW(window));
@@ -477,6 +555,7 @@ static void activate (GtkApplication* app, gpointer user_data) {
     gtk_fixed_put (GTK_FIXED(tex),buttonEliminar, 480, 150);
     gtk_fixed_put (GTK_FIXED(tex),buttonDetalles, 280, 150);
     gtk_fixed_put (GTK_FIXED(tex), buttonSave, 680, 150);
+    gtk_fixed_put (GTK_FIXED(tex), buttonAbout, 880, 150);
     // gtk_fixed_put (GTK_FIXED(tex), buttonSave, 880, 150);
     gtk_fixed_put (GTK_FIXED(tex), cajitaInterior, 310, 220);
 
@@ -490,6 +569,7 @@ static void activate (GtkApplication* app, gpointer user_data) {
     gtk_widget_set_size_request (GTK_WIDGET(buttonRecorrido),150,35);
     gtk_widget_set_size_request (GTK_WIDGET(buttonInsertar),150,35);
     gtk_widget_set_size_request (GTK_WIDGET(buttonSave),150, 35);
+    gtk_widget_set_size_request (GTK_WIDGET(buttonAbout),20, 40);
     gtk_widget_set_size_request (GTK_WIDGET(cajitaInterior),402,400);
     gtk_widget_set_size_request (GTK_WIDGET(showGrapho),500,400);
     // Load CSS file

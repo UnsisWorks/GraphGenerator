@@ -1,6 +1,6 @@
 digraph Holaaa {
 	node[shape = egg fillcolor = "transparent" style = filled]
-	label = "Pie de grapho"
+	label = "dd"
 	bgcolor = "#07836a00"
 
 	node [shape=none, image="./images/Árboles/Esfera3.png"];
@@ -8,13 +8,12 @@ digraph Holaaa {
 	subgraph tsubgraph1 {
 		edge[dir = "normal" color = "#4613c8"]
 		fila0[label = "12" group=1]
-		fila1[label = "34" group=1]
-		fila2[label = "56" group=1]
-		fila3[label = "78" group=1]
+		fila1[label = "45" group=1]
+		fila2[label = "67" group=1]
 
+		fila0 -> fila1
+		fila0 -> fila0
 		fila1 -> fila2
-		fila1 -> fila0
-		fila2 -> fila3
 
 	}
 }
