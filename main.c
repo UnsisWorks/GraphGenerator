@@ -43,26 +43,46 @@ static void windowAbout (GtkApplication *app, gpointer user_data) {
   GtkWidget *Aboutbox;
   GtkCssProvider *cssProvider;
 
-
   Aboutbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-
 
     // Set properties for winow
     Aboutwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_position(GTK_WINDOW(Aboutwindow), GTK_WIN_POS_CENTER);
     gtk_window_set_title (GTK_WINDOW (Aboutwindow), "ABOUT");
-    gtk_window_set_default_size (GTK_WINDOW (Aboutwindow), 650, 700);
+    gtk_window_set_default_size (GTK_WINDOW (Aboutwindow), 650, 600);
     gtk_window_set_resizable(GTK_WINDOW(Aboutwindow), FALSE);
-
 
     gtk_widget_set_name(GTK_WIDGET(Aboutbox), "Aboutbox");
 
-
     gtk_container_add(GTK_CONTAINER(Aboutwindow), Aboutbox);
     gtk_widget_show_all (Aboutwindow);
+}
+void numm () {
+    gtk_widget_set_visible(GTK_WIDGET(window), TRUE);
+}
+static void windowGrapho () {
+  GtkWidget *Aboutwindow;
+  GtkWidget *Aboutbox, *grapho;
+  GtkCssProvider *cssProvider;
 
+  Aboutbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+//   grapho = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    grapho = gtk_image_new_from_file("./data.png");
 
+    // Set properties for winow
+    Aboutwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_position(GTK_WINDOW(Aboutwindow), GTK_WIN_POS_CENTER);
+    gtk_window_set_title (GTK_WINDOW (Aboutwindow), "ABOUT");
+    gtk_window_set_default_size (GTK_WINDOW (Aboutwindow), 700, 550);
+    gtk_window_set_resizable(GTK_WINDOW(Aboutwindow), FALSE);
 
+    gtk_widget_set_name(GTK_WIDGET(Aboutbox), "window-grapho");
+    // gtk_widget_set_name(GTK_WIDGET(grapho), "show-grapho");
+
+    gtk_container_add(GTK_CONTAINER(Aboutbox), grapho);
+    gtk_container_add(GTK_CONTAINER(Aboutwindow), Aboutbox);
+    gtk_widget_show_all (Aboutwindow);
+    g_signal_connect(Aboutwindow, "destroy", G_CALLBACK(numm), NULL);
 }
 
 static void details (GtkWindow *parent, gpointer user_data) {
@@ -238,8 +258,9 @@ void createGrafo(GtkWidget *button, widgets *ws) {
         puts("aqui actual");
         // GtkWidget *mainWindow = GTK_WIDGET(ws -> mainWindow);
         gtk_widget_set_visible(GTK_WIDGET(mainWindow), FALSE);
-        gtk_widget_set_name(GTK_WIDGET(showGrapho), "show-grapho");
-        gtk_widget_set_visible(GTK_WIDGET(window), TRUE);
+        // gtk_widget_set_name(GTK_WIDGET(showGrapho), "show-grapho");
+        // gtk_widget_set_visible(GTK_WIDGET(window), TRUE);
+        windowGrapho();
     } else {
         puts("Vacia");
     }

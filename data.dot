@@ -1,6 +1,6 @@
 digraph Holaaa {
 	node[shape = egg fillcolor = "transparent" style = filled]
-	label = "dd"
+	label = "juan"
 	bgcolor = "#07836a00"
 
 	node [shape=none, image="./images/Árboles/Esfera3.png"];
@@ -10,10 +10,13 @@ digraph Holaaa {
 		fila0[label = "12" group=1]
 		fila1[label = "45" group=1]
 		fila2[label = "67" group=1]
+		fila3[label = "87" group=1]
+		fila4[label = "21" group=1]
 
 		fila0 -> fila1
-		fila0 -> fila0
 		fila1 -> fila2
+		fila1 -> fila4
+		fila2 -> fila3
 
 	}
 }

@@ -11,7 +11,7 @@ OBJ = arbol.o
 # Reglas explicitas
 
 all: $(OBJ)
-	$(CC) $(CFLAGS) -o arbol main.c $(CFLAGSEND)
+	$(CC) $(CFLAGS) -o main main.c $(CFLAGSEND)
 clean:
 	$(RM) $(OBJ) main
 

@@ -129,3 +129,9 @@
     box-shadow: 0px 0px 15px rgb(255, 255, 255);
 }
 
+
+#window-grapho {
+    background-image: url("./images/Pino.png");
+    background-repeat: no-repeat;
+    background-position: center;
+}

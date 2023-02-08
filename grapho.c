@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+// #include <threads.h>
 
 int max(int a, int b) {
     return (a > b)? a : b;
@@ -25,11 +26,11 @@ int height(struct Node *N) {
 }
 
 // Obtiene el factor de equilibrio de un nodo
-int getBalance(struct Node *N) {
-    if (N == NULL)
-        return 0;
-    return height(N->left) - height(N->right);
-}
+// int getBalance(struct Node *N) {
+//     if (N == NULL)
+//         return 0;
+//     return height(N->left) - height(N->right);
+// }
 
 // Crea un nuevo nodo
 struct Node* newNode(int key, int id) {
@@ -44,38 +45,38 @@ struct Node* newNode(int key, int id) {
 }
 
 // Realiza una rotación simple a la derecha
-struct Node *rightRotate(struct Node *y) {
-    struct Node *x = y->left;
-    struct Node *T2 = x->right;
+// struct Node *rightRotate(struct Node *y) {
+//     struct Node *x = y->left;
+//     struct Node *T2 = x->right;
 
-    // Realiza la rotación
-    x->right = y;
-    y->left = T2;
+//     // Realiza la rotación
+//     x->right = y;
+//     y->left = T2;
 
-    // Actualiza las alturas
-    y->height = max(height(y->left), height(y->right))+1;
-    x->height = max(height(x->left), height(x->right))+1;
+//     // Actualiza las alturas
+//     y->height = max(height(y->left), height(y->right))+1;
+//     x->height = max(height(x->left), height(x->right))+1;
 
-    // Retorna el nodo raíz actual
-    return x;
-}
+//     // Retorna el nodo raíz actual
+//     return x;
+// }
 
 // Realiza una rotación simple a la izquierda
-struct Node *leftRotate(struct Node *x) {
-    struct Node *y = x->right;
-    struct Node *T2 = y->left;
+// struct Node *leftRotate(struct Node *x) {
+//     struct Node *y = x->right;
+//     struct Node *T2 = y->left;
 
-    // Realiza la rotación
-    y->left = x;
-    x->right = T2;
+//     // Realiza la rotación
+//     y->left = x;
+//     x->right = T2;
 
-    // Actualiza las alturas
-    x->height = max(height(x->left), height(x->right))+1;
-    y->height = max(height(y->left), height(y->right))+1;
+//     // Actualiza las alturas
+//     x->height = max(height(x->left), height(x->right))+1;
+//     y->height = max(height(y->left), height(y->right))+1;
 
-    // Retorna el nodo raíz actual
-    return y;
-}
+//     // Retorna el nodo raíz actual
+//     return y;
+// }
 
 // Inserta un nuevo valor en el AVL tree
 struct Node* insert(struct Node* node, int key, int id) {
@@ -102,29 +103,29 @@ struct Node* insert(struct Node* node, int key, int id) {
     node->height = 1 + (height(node->left) > height(node->right) ? height(node->left) : height(node->right));
 
     // Obtiene el factor de equilibrio del nodo actual
-    int balance = getBalance(node);
+    // int balance = getBalance(node);
 
-    // Si el factor de equilibrio es mayor a 1, significa que el subárbol izquierdo es más pesado
-    // y se necesita realizar una rotación a la derecha o una rotación doble a la izquierda
-    if (balance > 1) {
-        // Si el factor de equilibrio del hijo izquierdo es menor a 0, significa que el subárbol derecho
-        // es más pesado, por lo que se necesita realizar una rotación doble a la izquierda
-        if (getBalance(node->left) < 0) {
-            node->left = leftRotate(node->left);
-        }
-        return rightRotate(node);
-    }
+    // // Si el factor de equilibrio es mayor a 1, significa que el subárbol izquierdo es más pesado
+    // // y se necesita realizar una rotación a la derecha o una rotación doble a la izquierda
+    // if (balance > 1) {
+    //     // Si el factor de equilibrio del hijo izquierdo es menor a 0, significa que el subárbol derecho
+    //     // es más pesado, por lo que se necesita realizar una rotación doble a la izquierda
+    //     if (getBalance(node->left) < 0) {
+    //         node->left = leftRotate(node->left);
+    //     }
+    //     return rightRotate(node);
+    // }
 
-    // Si el factor de equilibrio es menor a -1, significa que el subárbol derecho es más pesado
-    // y se necesita realizar una rotación a la izquierda o una rotación doble a la derecha
-    if (balance < -1) {
-        // Si el factor de equilibrio del hijo derecho es mayor a 0, significa que el subárbol izquierdo
-        // es más pesado, por lo que se necesita realizar una rotación doble a la derecha
-        if (getBalance(node->right) > 0) {
-            node->right = rightRotate(node->right);
-        }
-        return leftRotate(node);
-    }
+    // // Si el factor de equilibrio es menor a -1, significa que el subárbol derecho es más pesado
+    // // y se necesita realizar una rotación a la izquierda o una rotación doble a la derecha
+    // if (balance < -1) {
+    //     // Si el factor de equilibrio del hijo derecho es mayor a 0, significa que el subárbol izquierdo
+    //     // es más pesado, por lo que se necesita realizar una rotación doble a la derecha
+    //     if (getBalance(node->right) > 0) {
+    //         node->right = rightRotate(node->right);
+    //     }
+    //     return leftRotate(node);
+    // }
 
     // Retorna el nodo raíz actual
     return node;
@@ -200,29 +201,29 @@ struct Node* deleteNode(struct Node* root, int key) {
     root->height = 1 + max(height(root->left), height(root->right));
 
     // Obtiene el factor de equilibrio del nodo actual
-    int balance = getBalance(root);
+    // int balance = getBalance(root);
 
     // Si el factor de equilibrio es mayor a 1 o menor a -1, entonces el árbol se ha desequilibrado y se necesita realizar una rotación
 
     // Caso Left Left
-    if (balance > 1 && getBalance(root->left) >= 0)
-        return rightRotate(root);
+    // if (balance > 1 && getBalance(root->left) >= 0)
+    //     return rightRotate(root);
 
-    // Caso Left Right
-    if (balance > 1 && getBalance(root->left) < 0) {
-        root->left =  leftRotate(root->left);
-        return rightRotate(root);
-    }
+    // // Caso Left Right
+    // if (balance > 1 && getBalance(root->left) < 0) {
+    //     root->left =  leftRotate(root->left);
+    //     return rightRotate(root);
+    // }
 
-    // Caso Right Right
-    if (balance < -1 && getBalance(root->right) <= 0)
-        return leftRotate(root);
+    // // Caso Right Right
+    // if (balance < -1 && getBalance(root->right) <= 0)
+    //     return leftRotate(root);
 
-    // Caso Right Left
-    if (balance < -1 && getBalance(root->right) > 0) {
-        root->right = rightRotate(root->right);
-        return leftRotate(root);
-    }
+    // // Caso Right Left
+    // if (balance < -1 && getBalance(root->right) > 0) {
+    //     root->right = rightRotate(root->right);
+    //     return leftRotate(root);
+    // }
     return root;
 }
 
@@ -268,22 +269,3 @@ struct Node* searchHelper(struct Node* node, int id) {
     // Busca en el subárbol derecho
     return searchHelper(node->right, id);
 }
-// struct Node* search(int id) {
-    // struct Node* current = mainRoot; // Obtiene el nodo raíz
-//     while (current != NULL) {
-//         if (current->id == id) { // Si el id del nodo actual es igual al id buscado, se retorna el nodo
-//             return current;
-//         }
-//         if (current->id > id) { // Si el id del nodo actual es mayor al id buscado, se busca en el subárbol izquierdo
-//             current = current->left;
-//         } else { // Si el id del nodo actual es menor al id buscado, se busca en el subárbol derecho
-//             current = current->right;
-//         }
-//     }
-//     return NULL; // Si no se encuentra el nodo, se retorna NULL
-// }
-
-// void main() {
-//     struct Node* arbolito;
-//     insert(arbolito, 10, 1);
-// }
