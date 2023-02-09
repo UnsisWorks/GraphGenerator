@@ -11,6 +11,8 @@ typedef struct structWidgets {
 
 int numNodes;
 GtkWidget *node;
+GtkWidget *windowInsertion;
+int *valores;
 struct Node *grapho;
 GtkWidget *nameField;
 struct Node *loadGrapho;
@@ -56,79 +58,6 @@ static void windowAbout (GtkApplication *app, gpointer user_data) {
 
     gtk_container_add(GTK_CONTAINER(Aboutwindow), Aboutbox);
     gtk_widget_show_all (Aboutwindow);
-}
-void numm () {
-    gtk_widget_set_visible(GTK_WIDGET(window), TRUE);
-}
-static void windowGrapho () {
-  GtkWidget *Aboutwindow;
-  GtkWidget *Aboutbox, *grapho;
-  GtkCssProvider *cssProvider;
-
-  Aboutbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-//   grapho = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    grapho = gtk_image_new_from_file("./data.png");
-
-    // Set properties for winow
-    Aboutwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_position(GTK_WINDOW(Aboutwindow), GTK_WIN_POS_CENTER);
-    gtk_window_set_title (GTK_WINDOW (Aboutwindow), "ABOUT");
-    gtk_window_set_default_size (GTK_WINDOW (Aboutwindow), 700, 550);
-    gtk_window_set_resizable(GTK_WINDOW(Aboutwindow), FALSE);
-
-    gtk_widget_set_name(GTK_WIDGET(Aboutbox), "window-grapho");
-    // gtk_widget_set_name(GTK_WIDGET(grapho), "show-grapho");
-
-    gtk_container_add(GTK_CONTAINER(Aboutbox), grapho);
-    gtk_container_add(GTK_CONTAINER(Aboutwindow), Aboutbox);
-    gtk_widget_show_all (Aboutwindow);
-    g_signal_connect(Aboutwindow, "destroy", G_CALLBACK(numm), NULL);
-}
-
-static void details (GtkWindow *parent, gpointer user_data) {
-    GtkWidget *detWindow = gtk_window_new(GDK_WINDOW_TOPLEVEL);
-    gtk_window_set_default_size(GTK_WINDOW(detWindow), 300, 400);
-    gtk_window_set_resizable(GTK_WINDOW(detWindow), FALSE);
-    gtk_window_set_title(GTK_WINDOW(detWindow), "Detalles");
-    gtk_window_set_position(GTK_WINDOW(detWindow), GTK_WIN_POS_CENTER);
-
-    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_widget_set_margin_top(GTK_WIDGET(box), 30);
-    gtk_widget_set_name(GTK_WIDGET(box), "box-details");
-
-    char heigthl[20] = "Altura: ";
-    char nodes[30] = "Numero de nodos: ";
-
-    char aux[10];
-    char aux2[10];
-    char aux3[50] = "Nombre: ";
-
-    sprintf(aux, "%d", numNodes);
-    sprintf(aux2, "%d", height(loadGrapho));
-    printf("Alt: %d", height(loadGrapho));
-
-    strcat(heigthl, aux2);
-    strcat(nodes, aux);
-    strcat(aux3, gtk_entry_get_text(GTK_ENTRY(nameField)));
-
-    GtkWidget *labelTitle = gtk_label_new("DETALLES DEL GRAFO");
-    // GtkWidget *label = gtk_label_new("");
-    GtkWidget *labelName = gtk_label_new(aux3);
-    GtkWidget *labelNunNode = gtk_label_new(nodes);
-    GtkWidget *labelHeigth = gtk_label_new(heigthl);
-    // GtkWidget *labelPreOrder =
-
-    gtk_style_context_add_class(gtk_widget_get_style_context(labelTitle), "label-details");
-    gtk_style_context_add_class(gtk_widget_get_style_context(labelName), "label-details");
-    gtk_style_context_add_class(gtk_widget_get_style_context(labelNunNode), "label-details");
-    gtk_style_context_add_class(gtk_widget_get_style_context(labelHeigth), "label-details");
-
-    gtk_container_add(GTK_CONTAINER(detWindow), box);
-    gtk_container_add(GTK_CONTAINER(box), labelTitle);
-    gtk_container_add(GTK_CONTAINER(box), labelName);
-    gtk_container_add(GTK_CONTAINER(box), labelNunNode);
-    gtk_container_add(GTK_CONTAINER(box), labelHeigth);
-    gtk_widget_show_all (detWindow);
 }
 
 void ExportToDot(gint values[numNodes], char pieGrafo[]) {
@@ -190,6 +119,133 @@ void ExportToDot(gint values[numNodes], char pieGrafo[]) {
 
     system("dot -Tpng -o data.png data.dot");
 }
+void numm () {
+    gtk_widget_set_visible(GTK_WIDGET(window), TRUE);
+}
+static void windowGrapho () {
+  GtkWidget *Aboutwindow;
+  GtkWidget *Aboutbox, *grapho;
+  GtkCssProvider *cssProvider;
+
+  Aboutbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+//   grapho = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    grapho = gtk_image_new_from_file("./data.png");
+
+    // Set properties for winow
+    Aboutwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_position(GTK_WINDOW(Aboutwindow), GTK_WIN_POS_CENTER);
+    gtk_window_set_title (GTK_WINDOW (Aboutwindow), "ABOUT");
+    gtk_window_set_default_size (GTK_WINDOW (Aboutwindow), 700, 550);
+    gtk_window_set_resizable(GTK_WINDOW(Aboutwindow), FALSE);
+
+    gtk_widget_set_name(GTK_WIDGET(Aboutbox), "window-grapho");
+    // gtk_widget_set_name(GTK_WIDGET(grapho), "show-grapho");
+
+    gtk_container_add(GTK_CONTAINER(Aboutbox), grapho);
+    gtk_container_add(GTK_CONTAINER(Aboutwindow), Aboutbox);
+    gtk_widget_show_all (Aboutwindow);
+    g_signal_connect(Aboutwindow, "destroy", G_CALLBACK(numm), NULL);
+}
+void insertarNuevoVal (GtkWindow *parent, gpointer user_data) {
+    puts("intro");
+    GtkWidget *grapho = (GtkWidget *) user_data;
+    puts("casteado");
+    GString *aux = g_string_new(gtk_entry_get_text(GTK_ENTRY(grapho)));
+    puts("get value");
+
+    loadGrapho = insert(loadGrapho, atoi(aux->str), loadGrapho->id + 1);
+    puts("pre open window");
+    valores = realloc(valores, sizeof(int) * numNodes + 1);
+    valores[numNodes + 1] = atoi(aux->str);
+    ExportToDot(valores, "");
+    windowGrapho();
+    puts("windnows opwn");
+    gtk_widget_destroy(GTK_WIDGET(windowInsertion));
+}
+static void windowInsert () {
+  GtkWidget *Aboutbox, *grapho, *button, *buttBox;
+  GtkCssProvider *cssProvider;
+
+  Aboutbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+
+    grapho = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(grapho), "Nuevo valor");
+
+    button = gtk_button_new_with_label("Aceptar");
+    buttBox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+    gtk_widget_set_name(GTK_WIDGET(button), "button-insert");
+    gtk_container_add(GTK_CONTAINER(buttBox), button);  
+
+    g_object_set_data(G_OBJECT(button), "grapho", grapho);
+    g_signal_connect(button, "clicked", G_CALLBACK(insertarNuevoVal), grapho);
+    // Set properties for winow
+    windowInsertion = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_position(GTK_WINDOW(windowInsertion), GTK_WIN_POS_CENTER);
+    gtk_window_set_title (GTK_WINDOW (windowInsertion), "ABOUT");
+    gtk_window_set_default_size (GTK_WINDOW (windowInsertion), 700, 550);
+    gtk_window_set_resizable(GTK_WINDOW(windowInsertion), FALSE);
+
+    gtk_widget_set_name(GTK_WIDGET(Aboutbox), "window-grapho");
+    // gtk_widget_set_name(GTK_WIDGET(grapho), "show-grapho");
+
+    gtk_container_add(GTK_CONTAINER(Aboutbox), grapho);
+    gtk_container_add(GTK_CONTAINER(Aboutbox), buttBox);
+    gtk_container_add(GTK_CONTAINER(windowInsertion), Aboutbox);
+    gtk_widget_show_all (windowInsertion);
+    g_signal_connect(windowInsertion, "destroy", G_CALLBACK(numm), NULL);
+}
+void insertarNuevo () {
+    if (loadGrapho != NULL)
+    {
+        windowInsert();
+    }
+    
+}
+static void details (GtkWindow *parent, gpointer user_data) {
+    GtkWidget *detWindow = gtk_window_new(GDK_WINDOW_TOPLEVEL);
+    gtk_window_set_default_size(GTK_WINDOW(detWindow), 300, 400);
+    gtk_window_set_resizable(GTK_WINDOW(detWindow), FALSE);
+    gtk_window_set_title(GTK_WINDOW(detWindow), "Detalles");
+    gtk_window_set_position(GTK_WINDOW(detWindow), GTK_WIN_POS_CENTER);
+
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_widget_set_margin_top(GTK_WIDGET(box), 30);
+    gtk_widget_set_name(GTK_WIDGET(box), "box-details");
+
+    char heigthl[20] = "Altura: ";
+    char nodes[30] = "Numero de nodos: ";
+
+    char aux[10];
+    char aux2[10];
+    char aux3[50] = "Nombre: ";
+
+    sprintf(aux, "%d", numNodes);
+    sprintf(aux2, "%d", height(loadGrapho));
+    printf("Alt: %d", height(loadGrapho));
+
+    strcat(heigthl, aux2);
+    strcat(nodes, aux);
+    strcat(aux3, gtk_entry_get_text(GTK_ENTRY(nameField)));
+
+    GtkWidget *labelTitle = gtk_label_new("DETALLES DEL GRAFO");
+    // GtkWidget *label = gtk_label_new("");
+    GtkWidget *labelName = gtk_label_new(aux3);
+    GtkWidget *labelNunNode = gtk_label_new(nodes);
+    GtkWidget *labelHeigth = gtk_label_new(heigthl);
+    // GtkWidget *labelPreOrder =
+
+    gtk_style_context_add_class(gtk_widget_get_style_context(labelTitle), "label-details");
+    gtk_style_context_add_class(gtk_widget_get_style_context(labelName), "label-details");
+    gtk_style_context_add_class(gtk_widget_get_style_context(labelNunNode), "label-details");
+    gtk_style_context_add_class(gtk_widget_get_style_context(labelHeigth), "label-details");
+
+    gtk_container_add(GTK_CONTAINER(detWindow), box);
+    gtk_container_add(GTK_CONTAINER(box), labelTitle);
+    gtk_container_add(GTK_CONTAINER(box), labelName);
+    gtk_container_add(GTK_CONTAINER(box), labelNunNode);
+    gtk_container_add(GTK_CONTAINER(box), labelHeigth);
+    gtk_widget_show_all (detWindow);
+}
 
 void createGrafo(GtkWidget *button, widgets *ws) {
     // Get input the user
@@ -210,6 +266,7 @@ void createGrafo(GtkWidget *button, widgets *ws) {
 
         // Create array for values the nodes
         gint values[numNodes];
+        valores = (int *) realloc(valores, sizeof(int) * numNodes);
 
         // Save values for each nodes
         int preInput = 0;
@@ -222,6 +279,7 @@ void createGrafo(GtkWidget *button, widgets *ws) {
                 for (int j = preInput; j < i; j++) {
                     g_string_append_c(aux, input->str[j]);
                     values[count] = atoi(aux->str);
+                    valores[count] = atoi(aux->str);
                     preInput = i + 1;
                 }
                 // printf("Valor: %d : i: %d\n", values[count], i);
@@ -233,6 +291,7 @@ void createGrafo(GtkWidget *button, widgets *ws) {
                 for (int j = i + 1; j < input -> len; j++) {
                     g_string_append_c(aux, input->str[j]);
                     values[count] = atoi(aux->str);
+                    valores[count] = atoi(aux->str);
                     preInput = i + 1;
                 }
                 // printf("Valor: %d : i: %d\n", values[count], i);
@@ -252,7 +311,8 @@ void createGrafo(GtkWidget *button, widgets *ws) {
         ExportToDot(values, "hola");
 
         loadGrapho = grapho;
-        freeAVLTree(grapho);
+        // ExportToDot()
+        // freeAVLTree(grapho);
 
         // Sets grapho as the main. Change window 
         puts("aqui actual");
@@ -508,13 +568,15 @@ static void activate (GtkApplication* app, gpointer user_data) {
     buttonSave = gtk_button_new();
     buttonAbout = gtk_button_new_with_label("!");
     tex = gtk_fixed_new ();
+    buttonRecorrido = gtk_combo_box_new();
+    buttonInsertar = gtk_button_new();
+
     g_signal_connect(buttonCrear, "clicked", G_CALLBACK(create), NULL);
     g_signal_connect(buttonAbrir, "clicked", G_CALLBACK(openFile), NULL);
     g_signal_connect(buttonSave, "clicked", G_CALLBACK(saveGrapho), NULL);
     g_signal_connect(buttonDetalles, "clicked", G_CALLBACK(details), NULL);
     g_signal_connect(buttonAbout, "clicked", G_CALLBACK(windowAbout), NULL);
-    buttonRecorrido = gtk_combo_box_new();
-    buttonInsertar = gtk_button_new();
+    g_signal_connect(buttonInsertar, "clicked", G_CALLBACK(insertarNuevo), NULL);
     
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonCrear), "buttonCrear");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonBuscar), "buttonBuscar");

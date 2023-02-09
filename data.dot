@@ -1,22 +1,31 @@
 digraph Holaaa {
 	node[shape = egg fillcolor = "transparent" style = filled]
-	label = "juan"
+	label = "arbol"
 	bgcolor = "#07836a00"
 
 	node [shape=none, image="./images/Árboles/Esfera3.png"];
 
 	subgraph tsubgraph1 {
 		edge[dir = "normal" color = "#4613c8"]
-		fila0[label = "12" group=1]
-		fila1[label = "45" group=1]
-		fila2[label = "67" group=1]
-		fila3[label = "87" group=1]
-		fila4[label = "21" group=1]
+		fila0[label = "120" group=1]
+		fila1[label = "87" group=1]
+		fila2[label = "43" group=1]
+		fila3[label = "65" group=1]
+		fila4[label = "140" group=1]
+		fila5[label = "99" group=1]
+		fila6[label = "130" group=1]
+		fila7[label = "22" group=1]
+		fila8[label = "56" group=1]
 
+		fila0 -> fila4
 		fila0 -> fila1
+		fila1 -> fila5
 		fila1 -> fila2
-		fila1 -> fila4
 		fila2 -> fila3
+		fila2 -> fila7
+		fila3 -> fila8
+		fila4 -> fila6
+		fila8 -> fila1
 
 	}
 }
